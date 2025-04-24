@@ -1,5 +1,5 @@
 import userModel from "../models/userModel.js";
-import { hashPassword } from "../helpers/authHelpers.js";
+import { comparePassword, hashPassword } from "../helpers/authHelpers.js";
 import JWT from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -51,6 +51,82 @@ export const registerController = async(req,res) => {
             success:false,
             message:'Error in Registration',
             error
+        })
+    }
+}
+
+/** ======================================================================================== */
+
+//user Loging part
+export const loginController = async (req,res) => {
+    try {
+        const{email,password} = req.body
+        //validation
+        if(!email || !password){
+            return res.status(404).send({
+                success:false,
+                message:'Invalid email or password'
+            })
+        }
+        if(email==='' || password===''){
+            return res.status(404).send({
+                success:false,
+                message:'You are not fill Username or Password'
+            })
+        }
+        //check user
+        const user = await userModel.findOne({email});
+        if(!user){
+            return res.status(404).send({
+                success:false,
+                message:'Emails is not registered'
+            })
+        }
+        const match = await comparePassword(password, user.password)
+        if(!match){
+            return res.status(200).send({
+                success:false,
+                message:'Invalid Password'
+            })
+        }
+
+        //create token
+        const token = JWT.sign({ id: user._id}, process.env.JWT_SECRET , {expiresIn: '1d',});
+        res.status(200).cookie('access_token',token,{
+            httpOnly: true,
+        }).send({
+            success:true, 
+            message:'Login successfully',
+            user:{
+                name:user.name,
+                email:user.email,
+                address: user.address,
+            },
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            message:'Error in login',
+            error
+        })
+    }
+};
+
+/** ======================================================================================== */
+
+export const Signout = (req, res) => {
+    try {
+        res.clearCookie('access_token').status(200).send({
+            success:true,
+            message: 'Signout Successfully',
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error occure in signout function'
         })
     }
 }
