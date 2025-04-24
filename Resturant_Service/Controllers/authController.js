@@ -130,3 +130,46 @@ export const Signout = (req, res) => {
         })
     }
 }
+
+/** ======================================================================================== */
+
+export const userDelete = async (req,res) => {
+    if( req.user.id !== req.params.userId){
+        return res.status(403).send({success: false, message: 'You are not allowed to delete this account'});
+    }
+    try {
+        await userModel.findByIdAndDelete(req.params.userId);
+        res.status(200).send({
+            success:true,
+            message: 'User deleted successfully'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            message:'User delete Faild'
+        })
+    }
+}
+
+/** ======================================================================================== */
+
+//get all controller
+export const getAllUsers = async (req, res) => {
+    try {
+        const allUsers = await userModel.find();
+
+        res.status(200).send({
+            success: true,
+            message: 'All users getting successfully',
+            allUsers,
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in fetching all users',
+            error
+        })
+    }
+}
