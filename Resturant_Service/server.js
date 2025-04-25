@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoute.js';
 import cookieParser from 'cookie-parser';
+import menuRoutes from './routes/menuRoute.js';
 
 //config env
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 //routes
 app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/menuItem',menuRoutes);
 
 app.get("/", (req, res) => {
     res.send({

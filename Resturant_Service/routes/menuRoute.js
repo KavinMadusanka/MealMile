@@ -22,3 +22,5 @@ router.delete('/deleteMenu/:MenuID', verifyToken, isRestaurant, deleteMenuItem);
 
 //search menu items
 router.post('/SearchMenu', searchMenuItems);
+
+export default router;
