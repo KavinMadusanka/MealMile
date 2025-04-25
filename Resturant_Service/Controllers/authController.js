@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 //user register
 export const registerController = async(req,res) => {
     try {
-        const { name,email,password,address, lat, lng, role} = req.body 
+        const { name,email,password,address,contactNumber, lat, lng, role} = req.body 
         //validation
         if(!name){
             return res.status(400).send({message: 'Name is Required'})
@@ -17,13 +17,18 @@ export const registerController = async(req,res) => {
         if(!address){
             return res.status(400).send({message: 'Address is required'})
         }
+        if(!contactNumber){
+            return res.status(400).send({message: 'Contact Number is required'})
+        }
         if(role == 2){
             if(!lat){
-                return res.status(400).send({message: 'Currency type is required'})
+                return res.status(400).send({message: 'latitude type is required'})
             }
             if(!lng){
-                return res.status(400).send({message: 'Currency type is required'})
+                return res.status(400).send({message: 'longitude type is required'})
             }
+            var verifiedByAdmin = false;
+            var isAvailable = true;
         }
 
         //check user
@@ -39,7 +44,7 @@ export const registerController = async(req,res) => {
         //register user
         const hashedPassword = await hashPassword(password)
         //save
-        const user = await new userModel({name,email,address,password:hashedPassword, lat, lng, role}).save()
+        const user = await new userModel({name,email,address,password:hashedPassword,contactNumber,verifiedByAdmin,isAvailable, lat, lng, role}).save()
         res.status(201).send({
             success: true,
             message:'User Register successfully',
