@@ -3,6 +3,8 @@ import colors from 'colors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
+import deliveryRoutes from './routes/deliveryRoutes.js'
+import driverRoutes from './routes/driverRoutes.js'
 
 //config env
 dotenv.config();
@@ -12,6 +14,11 @@ connectDB();
 
 //rest object
 const app = express();
+
+app.use(express.json());
+
+app.use('/api/v1/delivery',deliveryRoutes);
+app.use('/api/v1/driver', driverRoutes);
 
 app.get("/", (req, res) => {
     res.send({
