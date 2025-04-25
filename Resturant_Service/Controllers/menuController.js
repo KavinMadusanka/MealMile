@@ -1,4 +1,4 @@
-import MenuItem from "../models/MenuItem.js";
+import MenuItem from "../models/menuModel.js";
 
 // Add new menu item
 export const addMenuItem = async (req, res) => {
