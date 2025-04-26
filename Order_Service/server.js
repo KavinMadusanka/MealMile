@@ -11,6 +11,7 @@ const port = process.env.PORT || 8087;
 connectDB();
 
 app.use(express.json());
+app.use("/api/cart",require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use(errorHandler);
 
