@@ -5,7 +5,7 @@ const ReviewList = ({ restaurantId }) => {
 
   useEffect(() => {
     if (!restaurantId) return;
-    fetch(`http://localhost:8086/api/restaurants/${restaurantId}/reviews`)
+    fetch(`http://localhost:8095/api/restaurants/${restaurantId}/reviews`)
       .then(res => res.json())
       .then(setData);
   }, [restaurantId]);
