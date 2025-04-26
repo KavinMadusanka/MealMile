@@ -7,6 +7,7 @@ import PaymentCancel from "./pages/payment/PaymentCancel";
 import HomePage from './pages/HomePage';
 import Review from './pages/Review';
 import LocationPicker  from './pages/restaurant/LocationPicker';
+import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/payment/cancel" element={<PaymentCancel />} />
         <Route path="/review" element={<Review />} />
         <Route path="/registerRestaurant" element={<LocationPicker />} />
+        <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
       </Routes>
     </Router>
   );
