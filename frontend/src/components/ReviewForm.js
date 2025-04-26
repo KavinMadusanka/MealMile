@@ -11,7 +11,7 @@ const ReviewForm = ({ restaurantId, onReviewSubmitted }) => {
     if (rating === 0) return alert("Please select a rating.");
     if (!customerName.trim() || !comment.trim()) return alert("Name and comment are required.");
 
-    await fetch(`http://localhost:8086/api/restaurants/${restaurantId}/reviews`, {
+    await fetch(`http://localhost:8095/api/restaurants/${restaurantId}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
