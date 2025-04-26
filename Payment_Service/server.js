@@ -24,7 +24,16 @@ app.use((req, res, next) => {
   });
   
   app.use(morgan('dev'));
-  app.use('/api/payments', paymentRoutes);
+
+  import cors from 'cors';
+
+// Enable CORS before routes
+app.use(cors({
+  origin: 'http://localhost:3000', // React app
+  credentials: true
+}));
+
+app.use('/api/payments', paymentRoutes);
 
   //Root test
 app.get("/", (req, res) => {

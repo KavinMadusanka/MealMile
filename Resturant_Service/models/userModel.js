@@ -19,17 +19,31 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    contactNumber: { 
+        type: String, 
+        required: true 
+    },
+    isAvailable: { 
+        type: Boolean, 
+        default: undefined 
+    },
+    verifiedByAdmin: { 
+        type: Boolean,
+        default: undefined 
+    },
     lat: {
         type: Number,
-        required: true,
+        // required: function () {
+        //     return this.role === '2';
+        //   }
     },
     lng: {
-        type: Number,
-        required: true,
+        type: Number
     },
     role:{
         type:Number,
-        default:0
+        enum:[ 0 , 1 , 2 ],
+        default:0 // 0-customer, 1-admin, 2- restaurant
     }
 },{timestamps:true});
 

@@ -6,6 +6,7 @@ import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentCancel from "./pages/payment/PaymentCancel";
 import HomePage from './pages/HomePage';
 import Review from './pages/Review';
+import LocationPicker  from './pages/restaurant/LocationPicker.js '
 
 function App() {
   return (

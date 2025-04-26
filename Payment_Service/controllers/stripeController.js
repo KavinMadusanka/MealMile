@@ -57,10 +57,10 @@ export const createStripeSession = async (req, res) => {
       }],
       mode: 'payment',
       customer_email: email,
-      // success_url: `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      // cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
-      success_url: `https://httpstat.us/200?s=Payment+Success`,
-      cancel_url: `https://httpstat.us/400?s=Payment+Cancelled`,
+       success_url: `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+       cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+      // success_url: `https://httpstat.us/200?s=Payment+Success`,
+      // cancel_url: `https://httpstat.us/400?s=Payment+Cancelled`,
 
       metadata: {
         order_id: orderId
