@@ -1,17 +1,19 @@
 import Driver from "../models/Driver.js";
+import Delivery from "../models/Delivery.js";
 
 // Create a new driver
 export const createDriverController = async (req, res) => {
   try {
-    const { name, phone, currentLocation } = req.body;
+    const { name, phone, email, currentLocation } = req.body;
 
-    if (!name || !phone || !currentLocation) {
+    if (!name || !phone || !email || !currentLocation) {
       return res.status(400).send({ message: "All fields are required" });
     }
 
     const newDriver = new Driver({
       name,
       phone,
+      email,
       currentLocation
     });
 
@@ -58,7 +60,6 @@ export const updateAvailabilityController = async (req, res) => {
     const { isAvailable } = req.body;
 
     const driver = await Driver.findById(id);
-
     if (!driver) {
       return res.status(404).send({ message: "Driver not found" });
     }
@@ -88,7 +89,6 @@ export const updateDriverLocationController = async (req, res) => {
     const { currentLocation } = req.body;
 
     const driver = await Driver.findById(id);
-
     if (!driver) {
       return res.status(404).send({ message: "Driver not found" });
     }
@@ -110,3 +110,57 @@ export const updateDriverLocationController = async (req, res) => {
     });
   }
 };
+
+// Driver responds to delivery request
+export const respondToDeliveryRequestController = async (req, res) => {
+  try {
+    const { id } = req.params; // delivery ID
+    const { response } = req.body; // 'accepted' or 'rejected'
+
+    const delivery = await Delivery.findById(id);
+    if (!delivery) {
+      return res.status(404).send({ message: "Delivery request not found" });
+    }
+
+    delivery.status = response; // set status to accepted/rejected
+    await delivery.save();
+
+    res.status(200).send({
+      success: true,
+      message: `Delivery request ${response}`,
+      delivery
+    });
+  } catch (error) {
+    console.error("Respond to Delivery Request Error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Error updating delivery response",
+      error
+    });
+  }
+};
+
+// Get delivery requests for a specific driver
+export const getAllDeliveryRequestsController = async (req, res) => {
+  try {
+    const { driverId } = req.params;
+
+    const deliveries = await Delivery.find({ driverId })
+      .select("orderId customerId currentLocation destination status createdAt");
+
+    res.status(200).send({
+      success: true,
+      message: "Driver's delivery requests fetched successfully",
+      deliveries
+    });
+  } catch (error) {
+    console.error("Get Driver Delivery Requests Error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching delivery requests",
+      error
+    });
+  }
+};
+
+
