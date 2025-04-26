@@ -52,31 +52,139 @@ const addItem = asyncHandler(async(req,res) => {
 // @desc View all carts
 // @route GET /api/cart
 const getCarts = asyncHandler(async(req,res) => {
-    res.status(200).json({message: "Get all carts"});
+    const { cid } = req.params;
+
+    if(!cid) {
+        res.status(400);
+        throw new Error("CustomerId is required");
+    }
+
+    const carts = await Cart.find({ customerId: cid });
+
+    if(!carts || carts.length === 0) {
+        return res.status(404).json({message: "No carts found"});
+    }
+
+    res.status(200).json(carts);
 });
 
 // @desc View cart by restaurant
-// @route GET /api/cart/:rid
+// @route GET /api/cart/:cid/:rid
 const getCart = asyncHandler(async(req,res) => {
-    res.status(200).json({message: `Get cart for ${req.params.rid}`});
+    const {cid, rid} = req.params;
+
+    if(!cid || !rid) {
+        res.status(400);
+        throw new Error("CustomerId and RestaurantId are required");
+    }
+
+    const cart = await Cart.findOne({customerId: cid, restaurantId: rid});
+
+    if(!cart) {
+        return res.status(404).json({message: "Cart not found"});
+    }
+
+    res.status(200).json(cart);
 });
 
 // @desc Update cart(restaurant)
-// @route PUT /api/cart/:rid
+// @route PUT /api/cart/:cid/:rid
 const updateCart = asyncHandler(async(req,res) => {
-    res.status(200).json({message: `Update cart for ${req.params.rid}`});
+    const {cid, rid} = req.params;
+    const {items} = req.body;
+
+    if(!cid || !rid) {
+        res.status(400);
+        throw new Error("CustomerId and RestaurantId are required");
+    }
+
+    if(!items || !Array.isArray(items)){
+        res.status(400);
+        throw new Error("Items array is required");
+    }
+
+    const cart = await Cart.findOne({customerId: cid, restaurantId: rid});
+
+    if(!cart){
+        return res.status(404).json({message: "Cart not found"});
+    }
+
+    items.forEach(updatedItem => {
+        const itemInCart = cart.items.find(i => i.itemId === updatedItem.itemId);
+        if(itemInCart){
+            itemInCart.quantity = updatedItem.quantity;
+        }
+    });
+
+    cart.totalAmount = cart.items.reduce(
+        (sum, i) => sum + i.quantity * (i.price || 0),
+        0
+    );
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Cart updated successfully",
+        cart
+    });
 });
 
 // @desc Clear a restaurant's cart
-// @route DELETE /api/cart/:rid
+// @route DELETE /api/cart/:cid/:rid
 const clearCart = asyncHandler(async(req,res) => {
-    res.status(200).json({message: `Clear cart for ${req.params.rid}`});
+    const {cid, rid} = req.params;
+
+    if(!cid || !rid){
+        res.status(400);
+        throw new Error("CustomerId and RestaurantId are required");
+    }
+
+    const cart = await Cart.findOne({customerId: cid, restaurantId: rid});
+
+    if(!cart){
+        return res.status(404).json({message:"Cart not found"});
+    }
+
+    await cart.deleteOne();
+
+    res.status(200).json({message: "Cart deleted Successfully"});
 });
 
 // @desc Remove item from cart
 // @route DELETE /api/cart/:rid/:iid
 const removeItem = asyncHandler(async(req,res) => {
-    res.status(200).json({message: `Remove item for ${req.params.iid}`});
+    const {cid, rid, iid} = req.params;
+
+    if(!cid || !rid || !iid){
+        res.status(400);
+        throw new Error("CustomerId, RestaurantId, and ItemId are required");
+    }
+
+    const cart = await Cart.findOne({customerId: cid, restaurantId: rid});
+
+    if(!cart){
+        return res.status(404).json({message: "Cart not found"});
+    }
+
+    const filteredItems = cart.items.filter(item => item.itemId !== iid);
+
+    if(filteredItems.length === cart.items.length){
+        return res.status(404).json({message: "Item not found in the cart"});
+    }
+
+    cart.items = filteredItems;
+
+    cart.totalAmount = cart.items.reduce(
+        (sum, i) => sum + i.quantity * (i.price || 0),
+        0
+    );
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item removed successfully",
+        cart
+    });
 });
 
 
