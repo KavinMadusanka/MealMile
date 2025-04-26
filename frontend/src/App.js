@@ -9,7 +9,6 @@ import Review from './pages/Review';
 import LocationPicker  from './pages/restaurant/LocationPicker';
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
 
-
 function App() {
   return (
     <Router>
