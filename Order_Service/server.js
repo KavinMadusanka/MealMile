@@ -5,7 +5,7 @@ const dotenv = require("dotenv").config();
 const connectDB = require("./config/db");
 
 const app = express();
-const port = process.env.PORT || 8087;
+const port = process.env.PORT || 8089;
 
 //database congit
 connectDB();
