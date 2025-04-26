@@ -1,10 +1,10 @@
 import Delivery from "../models/Delivery.js";
 import Driver from "../models/Driver.js";
+import nodemailer from "nodemailer";
 
-// Helper to calculate distance between two coordinates
+// Helper: Calculate distance between two coordinates
 function calculateDistance(lat1, lng1, lat2, lng2) {
   const toRad = (value) => (value * Math.PI) / 180;
-
   const R = 6371; // Radius of Earth (km)
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
@@ -19,18 +19,52 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
   return R * c;
 }
 
-// Assign driver to order
+// Helper: Send email to driver
+const sendAssignmentEmail = async (driverEmail, driverName, deliveryDetails) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "xenosysemail@gmail.com",
+      pass: "doni gywl eitg bqmb",
+    },
+  });
+
+  const mailOptions = {
+    from: "xenosysemail@gmail.com",
+    to: driverEmail,
+    subject: "New Delivery Request - Awaiting Your Response",
+    html: `
+      <p>Dear ${driverName},</p>
+      <p>You have a new delivery request.</p>
+      <p><strong>Order ID:</strong> ${deliveryDetails.orderId}</p>
+      <p><strong>Pickup:</strong> ${deliveryDetails.pickupLocation.lat}, ${deliveryDetails.pickupLocation.lng}</p>
+      <p><strong>Destination:</strong> ${deliveryDetails.destination.lat}, ${deliveryDetails.destination.lng}</p>
+      <p>Please respond via your dashboard to accept or reject this delivery.</p>
+      <p>Thank you!</p>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent to driver:", driverEmail);
+  } catch (err) {
+    console.error("Error sending email to driver:", err);
+  }
+};
+
+// Controller: Assign driver to delivery
 export const assignDriverController = async (req, res) => {
   try {
     const { orderId, customerId, destination, pickupLocation } = req.body;
 
     if (!orderId || !customerId || !destination || !pickupLocation) {
-      return res.status(400).json({ success: false, message: "All fields are required (orderId, customerId, destination, pickupLocation)" });
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required (orderId, customerId, destination, pickupLocation)"
+      });
     }
 
     const availableDrivers = await Driver.find({ isAvailable: true });
-
-    console.log("Available drivers:", availableDrivers);
 
     if (!availableDrivers.length) {
       return res.status(404).json({ success: false, message: "No available drivers" });
@@ -58,26 +92,30 @@ export const assignDriverController = async (req, res) => {
     }
 
     if (!nearestDriver) {
-      return res.status(500).json({ success: false, message: "Could not find a driver with valid location data" });
+      return res.status(500).json({ success: false, message: "No drivers with valid location data" });
     }
 
     const delivery = new Delivery({
       orderId,
       customerId,
       driverId: nearestDriver._id,
-      status: 'Assigned',
+      status: 'Pending',
       currentLocation: nearestDriver.currentLocation,
       destination
     });
 
     await delivery.save();
 
-    nearestDriver.isAvailable = false;
-    await nearestDriver.save();
+    // ✅ Send email to driver
+    await sendAssignmentEmail(nearestDriver.email, nearestDriver.name, {
+      orderId,
+      pickupLocation,
+      destination
+    });
 
     res.status(200).json({
       success: true,
-      message: "Nearest driver assigned successfully",
+      message: "Delivery request sent to nearest driver. Awaiting acceptance.",
       delivery,
       driver: {
         id: nearestDriver._id,
@@ -93,7 +131,122 @@ export const assignDriverController = async (req, res) => {
   }
 };
 
-// Get delivery status
+// Controller: Driver accepts/rejects delivery
+export const driverResponseController = async (req, res) => {
+  try {
+    const { id } = req.params; // Delivery ID
+    const { response } = req.body; // 'accept' or 'reject'
+
+    const delivery = await Delivery.findById(id);
+    if (!delivery) {
+      return res.status(404).json({ success: false, message: "Delivery not found" });
+    }
+
+    if (response === 'accept') {
+      delivery.status = 'Assigned';
+      await delivery.save();
+
+      const driver = await Driver.findById(delivery.driverId);
+      if (driver) {
+        driver.isAvailable = false;
+        await driver.save();
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Delivery accepted and assigned successfully",
+        delivery
+      });
+
+    } else if (response === 'reject') {
+      // Set previous driver back to available (optional)
+      const previousDriver = await Driver.findById(delivery.driverId);
+      if (previousDriver) {
+        previousDriver.isAvailable = true;
+        await previousDriver.save();
+      }
+
+      // ✅ Find next nearest driver
+      const availableDrivers = await Driver.find({ isAvailable: true, _id: { $ne: delivery.driverId } });
+
+      if (!availableDrivers.length) {
+        delivery.driverId = null;
+        delivery.status = 'Unassigned';
+        await delivery.save();
+
+        return res.status(200).json({
+          success: true,
+          message: "No other drivers available. Delivery is unassigned.",
+          delivery
+        });
+      }
+
+      let nearestDriver = null;
+      let minDistance = Infinity;
+
+      for (const driver of availableDrivers) {
+        if (!driver.currentLocation || driver.currentLocation.lat === undefined || driver.currentLocation.lng === undefined) {
+          continue;
+        }
+
+        const distance = calculateDistance(
+          delivery.currentLocation.lat,
+          delivery.currentLocation.lng,
+          driver.currentLocation.lat,
+          driver.currentLocation.lng
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestDriver = driver;
+        }
+      }
+
+      if (!nearestDriver) {
+        delivery.driverId = null;
+        delivery.status = 'Unassigned';
+        await delivery.save();
+
+        return res.status(500).json({
+          success: false,
+          message: "No drivers with valid location to reassign.",
+          delivery
+        });
+      }
+
+      // Assign to next nearest driver
+      delivery.driverId = nearestDriver._id;
+      delivery.status = 'Pending';
+      await delivery.save();
+
+      await sendAssignmentEmail(nearestDriver.email, nearestDriver.name, {
+        orderId: delivery.orderId,
+        pickupLocation: delivery.currentLocation,
+        destination: delivery.destination
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Previous driver rejected. Delivery sent to next nearest driver.",
+        delivery,
+        driver: {
+          id: nearestDriver._id,
+          name: nearestDriver.name,
+          location: nearestDriver.currentLocation,
+          distance: `${minDistance.toFixed(2)} km`
+        }
+      });
+    }
+
+    return res.status(400).json({ success: false, message: "Invalid response" });
+
+  } catch (error) {
+    console.error("Driver Response Error:", error);
+    res.status(500).json({ success: false, message: "Error processing driver response", error: error.message });
+  }
+};
+
+// Controller: Get delivery status
 export const getDeliveryStatusController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -116,7 +269,7 @@ export const getDeliveryStatusController = async (req, res) => {
   }
 };
 
-// Update driver location
+// Controller: Update driver location
 export const updateLocationController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -142,7 +295,7 @@ export const updateLocationController = async (req, res) => {
   }
 };
 
-// Update delivery status
+// Controller: Update delivery status
 export const updateStatusController = async (req, res) => {
   try {
     const { id } = req.params;

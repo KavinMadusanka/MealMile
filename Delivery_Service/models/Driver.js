@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 
 const DriverSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: String,
+  phone: String,
+  email: String,
   isAvailable: { type: Boolean, default: true },
   currentLocation: {
-    lat: { type: Number, required: true },
-    lng: { type: Number, required: true }
+    lat: Number,
+    lng: Number
   }
 });
 
