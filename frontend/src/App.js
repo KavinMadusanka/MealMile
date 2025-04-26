@@ -5,8 +5,9 @@ import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentCancel from "./pages/payment/PaymentCancel";
 import HomePage from './pages/HomePage';
-import LocationPicker  from './pages/restaurant/LocationPicker.js '
-
+import Review from './pages/Review';
+import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
+import RestaurantRegistration  from './pages/restaurant/RestaurantRegistration';
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel" element={<PaymentCancel />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
+        <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
       </Routes>
     </Router>
   );
