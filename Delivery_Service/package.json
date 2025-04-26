@@ -1,0 +1,27 @@
+{
+  "name": "delivery_service",
+  "version": "1.0.0",
+  "description": "Delivery-Management-Service",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Prabhasari P.T.P.",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "colors": "^1.4.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0",
+    "node": "^20.19.1",
+    "nodemodule": "^0.3.0",
+    "nodemon": "^3.1.10"
+  }
+}
