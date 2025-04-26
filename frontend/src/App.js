@@ -5,6 +5,7 @@ import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentCancel from "./pages/payment/PaymentCancel";
 import HomePage from './pages/HomePage';
+import Review from './pages/Review';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel" element={<PaymentCancel />} />
+        <Route path="/review" element={<Review />} />
       </Routes>
     </Router>
   );
