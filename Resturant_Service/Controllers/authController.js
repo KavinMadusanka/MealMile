@@ -1,7 +1,7 @@
 import userModel from "../models/userModel.js";
 import { comparePassword, hashPassword } from "../helpers/authHelpers.js";
 import JWT from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 //user register
 export const registerController = async(req,res) => {
@@ -107,6 +107,8 @@ export const loginController = async (req,res) => {
                 email:user.email,
                 address: user.address,
             },
+            token,
+            role: user.role,
         });
 
     } catch (error) {
