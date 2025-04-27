@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReviewForm from '../components/ReviewForm';
 import ReviewList from '../components/ReviewList';
+import Notification from '../components/Notification'; // ✅ Import Notification
 
 const mockRestaurants = [
   { id: 'resto123', name: 'Pizza Place' },
@@ -11,6 +12,12 @@ const mockRestaurants = [
 function Review() {
   const [restaurantId, setRestaurantId] = useState(mockRestaurants[0].id);
   const [showModal, setShowModal] = useState(false);
+  const [notification, setNotification] = useState({ message: '', type: '' });
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification({ message: '', type: '' }), 3000);
+  };
 
   const handleReviewSubmitted = () => {
     setShowModal(false);
@@ -20,6 +27,13 @@ function Review() {
 
   return (
     <div style={{ maxWidth: "1100px", margin: "auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      {/* Notification Box */}
+      <Notification 
+        message={notification.message} 
+        type={notification.type} 
+        onClose={() => setNotification({ message: '', type: '' })}
+      />
+
       <h2 style={{ textAlign: "center", marginBottom: "30px" }}>🍽️ Restaurant Reviews</h2>
 
       {/* Flex container */}
@@ -28,7 +42,7 @@ function Review() {
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: "20px",
-        flexWrap: "wrap"  // Responsive on small screens
+        flexWrap: "wrap"
       }}>
         <div>
           <label><strong>Select Restaurant:</strong></label>
@@ -62,7 +76,7 @@ function Review() {
         </div>
       </div>
 
-      <ReviewList restaurantId={restaurantId.trim()} />
+      <ReviewList restaurantId={restaurantId.trim()} showNotification={showNotification} />
 
       {/* Popup Modal */}
       {showModal && (
@@ -82,7 +96,7 @@ function Review() {
             >
               ×
             </button>
-            <ReviewForm restaurantId={restaurantId.trim()} onReviewSubmitted={handleReviewSubmitted} />
+            <ReviewForm restaurantId={restaurantId.trim()} onReviewSubmitted={handleReviewSubmitted} showNotification={showNotification} />
           </div>
         </div>
       )}

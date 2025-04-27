@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ReviewList = ({ restaurantId }) => {
+const ReviewList = ({ restaurantId, showNotification }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -19,15 +19,21 @@ const ReviewList = ({ restaurantId }) => {
   const total = data.totalReviews;
 
   const handleHelpfulClick = async (reviewId, isHelpful) => {
-    if (isHelpful) {
-      await fetch(`http://localhost:8095/api/reviews/${reviewId}/helpful`, { method: 'PATCH' });
-      setData(prev => ({
-        ...prev,
-        reviews: prev.reviews.map(r => r._id === reviewId ? { ...r, helpfulCount: (r.helpfulCount || 0) + 1 } : r)
-      }));
+    try {
+      if (isHelpful) {
+        await fetch(`http://localhost:8095/api/reviews/${reviewId}/helpful`, { method: 'PATCH' });
+        setData(prev => ({
+          ...prev,
+          reviews: prev.reviews.map(r => r._id === reviewId ? { ...r, helpfulCount: (r.helpfulCount || 0) + 1 } : r)
+        }));
+        showNotification('Thanks for your feedback! 👍', 'success');
+      } else {
+        showNotification('Thanks for your feedback! 🤝', 'info');
+      }
+    } catch (error) {
+      showNotification('Something went wrong! ❌', 'error');
     }
-    alert('Thanks for your feedback!');
-  };  
+  };
 
   return (
     <div style={{ marginTop: "30px" }}>
@@ -99,8 +105,8 @@ const ReviewList = ({ restaurantId }) => {
               >
                 No
               </button>
-                {" "}({rev.helpfulCount || 0} found helpful)
-              </div>
+              {" "}({rev.helpfulCount || 0} found helpful)
+            </div>
           </div>
         );
       })}
