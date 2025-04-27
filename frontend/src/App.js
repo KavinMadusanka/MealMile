@@ -1,6 +1,6 @@
 import './App.css';
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentCancel from "./pages/payment/PaymentCancel";
@@ -11,7 +11,6 @@ import RestaurantRegistration  from './pages/restaurant/RestaurantRegistration';
 
 function App() {
   return (
-    <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/payment" element={<PaymentPage />} />
@@ -21,7 +20,6 @@ function App() {
         <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
         <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
       </Routes>
-    </Router>
   );
 }
 
