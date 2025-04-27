@@ -5,12 +5,12 @@ import {
   updateAvailabilityController,
   updateDriverLocationController,
   respondToDeliveryRequestController,
-  getAllDeliveryRequestsController
+  getAllDeliveryRequestsController,
 } from '../Controllers/DriverController.js';
 
 const router = express.Router();
 
-// Create new driver
+// Create a new driver
 router.post('/create', createDriverController);
 
 // Get all drivers
