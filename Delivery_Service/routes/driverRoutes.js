@@ -6,6 +6,7 @@ import {
   updateDriverLocationController,
   respondToDeliveryRequestController,
   getAllDeliveryRequestsController,
+  getDriverByIdController,
 } from '../Controllers/DriverController.js';
 
 const router = express.Router();
@@ -27,5 +28,9 @@ router.put('/respond-delivery/:id', respondToDeliveryRequestController);
 
 // Get delivery requests assigned to a specific driver
 router.get('/delivery-requests/:driverId', getAllDeliveryRequestsController);
+
+// Get single driver by ID
+router.get('/get/:driverId', getDriverByIdController);
+
 
 export default router;

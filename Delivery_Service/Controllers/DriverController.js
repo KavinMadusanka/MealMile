@@ -156,3 +156,32 @@ export const getAllDeliveryRequestsController = async (req, res) => {
     });
   }
 };
+
+// Get single driver by ID
+export const getDriverByIdController = async (req, res) => {
+  try {
+    const { driverId } = req.params;
+
+    const driver = await Driver.findById(driverId);
+    if (!driver) {
+      return res.status(404).json({
+        success: false,
+        message: "Driver not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Driver retrieved successfully",
+      driver,
+    });
+  } catch (error) {
+    console.error("Get Driver By ID Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving driver",
+      error: error.message,
+    });
+  }
+};
+
