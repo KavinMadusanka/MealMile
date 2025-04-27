@@ -8,6 +8,10 @@ import HomePage from './pages/HomePage';
 import Review from './pages/Review';
 import LocationPicker  from './pages/restaurant/LocationPicker';
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
+import RestaurantRegistration  from './pages/restaurant/RestaurantRegistration';
+import DeliveryHistory from './pages/delivery/DeliveryHistory';
+import DeliveryRequests from './pages/delivery/DeliveryRequests';
+import TrackingUpdates from './pages/delivery/TrackingUpdates';
 
 function App() {
   return (
@@ -20,6 +24,10 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/registerRestaurant" element={<LocationPicker />} />
         <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
+        <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
+        <Route path="/deliveryHistory" element={<DeliveryHistory />} />
+        <Route path="/deliveryRequests" element={<DeliveryRequests />} />
+        <Route path="/trackingUpdates" element={<TrackingUpdates />} />
       </Routes>
     </Router>
   );
