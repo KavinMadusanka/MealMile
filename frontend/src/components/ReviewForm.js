@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ReviewForm = ({ restaurantId, onReviewSubmitted }) => {
+const ReviewForm = ({ restaurantId, onReviewSubmitted, showNotification }) => {
   const [customerName, setCustomerName] = useState('');
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -8,26 +8,36 @@ const ReviewForm = ({ restaurantId, onReviewSubmitted }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (rating === 0) return alert("Please select a rating.");
-    if (!customerName.trim() || !comment.trim()) return alert("Name and comment are required.");
+    if (rating === 0) {
+      showNotification("Please select a rating.", "error");
+      return;
+    }
+    if (!customerName.trim() || !comment.trim()) {
+      showNotification("Name and comment are required.", "error");
+      return;
+    }
 
-    await fetch(`http://localhost:8095/api/restaurants/${restaurantId}/reviews`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        customerId: `cust_${Date.now()}`, // mock
-        customerName,
-        rating,
-        comment
-      })
-    });
+    try {
+      await fetch(`http://localhost:8095/api/restaurants/${restaurantId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerId: `cust_${Date.now()}`, // mock ID
+          customerName,
+          rating,
+          comment
+        })
+      });
 
-    alert('Review submitted!');
-    setCustomerName('');
-    setRating(0);
-    setHover(0);
-    setComment('');
-    onReviewSubmitted();
+      showNotification('Review submitted successfully! ✅', 'success');
+      setCustomerName('');
+      setRating(0);
+      setHover(0);
+      setComment('');
+      onReviewSubmitted();
+    } catch (error) {
+      showNotification('Failed to submit review ❌', 'error');
+    }
   };
 
   return (
