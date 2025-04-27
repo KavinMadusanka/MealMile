@@ -18,12 +18,22 @@ const ReviewList = ({ restaurantId }) => {
   }, {});
   const total = data.totalReviews;
 
+  const handleHelpfulClick = async (reviewId, isHelpful) => {
+    if (isHelpful) {
+      await fetch(`http://localhost:8095/api/reviews/${reviewId}/helpful`, { method: 'PATCH' });
+      setData(prev => ({
+        ...prev,
+        reviews: prev.reviews.map(r => r._id === reviewId ? { ...r, helpfulCount: (r.helpfulCount || 0) + 1 } : r)
+      }));
+    }
+    alert('Thanks for your feedback!');
+  };  
+
   return (
     <div style={{ marginTop: "30px" }}>
-      <h3>Ratings Summary</h3>
-      <p><strong>Average Rating:</strong> {data.averageRating || "N/A"} / 5</p>
+      <h3>⭐ Ratings Summary</h3>
+      <p><strong>Average Rating:</strong> {data.averageRating || "N/A"} / 5 ({total} reviews)</p>
 
-      {/* Breakdown */}
       <div style={{ marginBottom: "20px" }}>
         {[5, 4, 3, 2, 1].map(star => (
           <div key={star} style={{ display: "flex", alignItems: "center", margin: "5px 0" }}>
@@ -40,42 +50,61 @@ const ReviewList = ({ restaurantId }) => {
         ))}
       </div>
 
-      <h3>User Reviews</h3>
-{data.reviews.map((rev) => {
-  const date = new Date(rev.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric'
-  });
+      <h3>📝 User Reviews</h3>
 
-  return (
-    <div
-      key={rev._id}
-      style={{
-        background: "#fefefe",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        padding: "15px",
-        marginBottom: "15px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.05)"
-      }}
-    >
-      <div style={{ marginBottom: "8px" }}>
-        <strong>{rev.customerName}</strong>
-        <span style={{ float: "right", color: "#888", fontSize: "14px" }}>{date}</span>
-      </div>
+      {data.reviews.map((rev) => {
+        const date = new Date(rev.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
 
-      <div style={{ marginBottom: "5px" }}>
-        {[...Array(5)].map((_, i) => (
-          <span key={i} style={{ color: i < rev.rating ? "#ffc107" : "#ccc", fontSize: "18px" }}>★</span>
-        ))}
-      </div>
+        return (
+          <div
+            key={rev._id}
+            style={{
+              background: "#fefefe",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              padding: "15px",
+              marginBottom: "15px",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.05)"
+            }}
+          >
+            <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>
+              <strong>{rev.customerName}</strong>
+              <span style={{ color: "#888", fontSize: "14px" }}>{date}</span>
+            </div>
 
-      <div style={{ fontSize: "15px", lineHeight: "1.5", color: "#333" }}>
-        <em>"{rev.comment}"</em>
-      </div>
+            <div style={{ marginBottom: "5px" }}>
+              {[...Array(5)].map((_, i) => (
+                <span key={i} style={{ color: i < rev.rating ? "#ffc107" : "#ccc", fontSize: "18px" }}>★</span>
+              ))}
+            </div>
+
+            <div style={{ fontSize: "15px", lineHeight: "1.6", color: "#333" }}>
+              <em>"{rev.comment}"</em>
+            </div>
+
+            {/* Helpful Section */}
+            <div style={{ marginTop: "10px", fontSize: "14px", color: "#555" }}>
+              Was this review helpful?{" "}
+              <button
+                onClick={() => handleHelpfulClick(rev._id, true)}
+                style={{ margin: "0 5px", padding: "5px 10px", background: "#28a745", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => handleHelpfulClick(rev._id, false)}
+                style={{ margin: "0 5px", padding: "5px 10px", background: "#dc3545", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              >
+                No
+              </button>
+                {" "}({rev.helpfulCount || 0} found helpful)
+              </div>
+          </div>
+        );
+      })}
     </div>
-  );
-})}
-</div>
   );
 };
 
