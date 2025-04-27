@@ -5,12 +5,13 @@ const dotenv = require("dotenv").config();
 const connectDB = require("./config/db");
 
 const app = express();
-const port = process.env.PORT || 8087;
+const port = process.env.PORT || 8089;
 
 //database congit
 connectDB();
 
 app.use(express.json());
+app.use("/api/cart",require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use(errorHandler);
 
