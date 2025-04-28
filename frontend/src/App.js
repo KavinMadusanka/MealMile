@@ -25,6 +25,10 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
         <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
+        <Route path="/deliveryHistory" element={<DeliveryHistory />} />
+        <Route path="/deliveryRequests" element={<DeliveryRequests />} />
+        <Route path="/trackingUpdates" element={<TrackingUpdates />} />
+
       </Routes>
     </>
   );

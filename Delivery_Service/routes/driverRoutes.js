@@ -5,12 +5,14 @@ import {
   updateAvailabilityController,
   updateDriverLocationController,
   respondToDeliveryRequestController,
-  getAllDeliveryRequestsController
+  getAllDeliveryRequestsController,
+  getDriverByIdController,
+  updateDriverDetailsController,
 } from '../Controllers/DriverController.js';
 
 const router = express.Router();
 
-// Create new driver
+// Create a new driver
 router.post('/create', createDriverController);
 
 // Get all drivers
@@ -27,5 +29,13 @@ router.put('/respond-delivery/:id', respondToDeliveryRequestController);
 
 // Get delivery requests assigned to a specific driver
 router.get('/delivery-requests/:driverId', getAllDeliveryRequestsController);
+
+// Get single driver by ID
+router.get('/get/:driverId', getDriverByIdController);
+
+// Update driver details
+router.put('/update/:id', updateDriverDetailsController);
+
+
 
 export default router;
