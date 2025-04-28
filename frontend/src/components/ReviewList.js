@@ -37,7 +37,7 @@ const ReviewList = ({ restaurantId, showNotification }) => {
 
   return (
     <div style={{ marginTop: "30px" }}>
-      <h3>⭐ Ratings Summary</h3>
+      <h4>⭐ Ratings Summary</h4>
       <p><strong>Average Rating:</strong> {data.averageRating || "N/A"} / 5 ({total} reviews)</p>
 
       <div style={{ marginBottom: "20px" }}>
@@ -55,8 +55,8 @@ const ReviewList = ({ restaurantId, showNotification }) => {
           </div>
         ))}
       </div>
-
-      <h3>📝 User Reviews</h3>
+      <br/>
+      <h4>📝 User Reviews</h4>
 
       {data.reviews.map((rev) => {
         const date = new Date(rev.createdAt).toLocaleDateString('en-US', {
