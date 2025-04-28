@@ -12,28 +12,24 @@ const MenuItemForm = () => {
   const [tags, setTags] = useState('');
   const [restaurantId, setrestaurantId] = useState('');
   const [isAvailable, setIsAvailable] = useState(true);
+  const [role, setRole] = useState('');
   const [auth,setAuth] = useAuth();
 
   useEffect(() => {
     if (auth && auth.user) {
         setrestaurantId(auth.user.id);
+        setRole(auth.user.role);
     }
   }, [auth]);
 
-  console.log(restaurantId);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // {
-    //   name,
-    //   description,
-    //   price,
-    //   category,
-    //   image,
-    //   tags: tags.split(','),
-    //   isAvailable,
-    // };
+    if(role !== 2){
+      toast.error('You are not allowed to add menu Items');
+      return;
+    }
 
     try {
         // Prepare data to be sent to the backend
@@ -49,7 +45,6 @@ const MenuItemForm = () => {
         if (image) {
             newItem.append("image", image);
           }
-        console.log('Token:', auth?.token);
         // Send POST request to add menu item
         const res = await axios.post('http://localhost:8086/api/v1/menuItem/AddMenu', newItem );
         // , {
