@@ -2,7 +2,9 @@ import express from 'express';
 import { addMenuItem,
     updateMenuItem,
     deleteMenuItem,
-    searchMenuItems
+    searchMenuItems,
+    getAllMenu,
+    getSingleItem
  } from '../Controllers/menuController.js';
 import { verifyToken,
     isAdmin,
@@ -22,5 +24,11 @@ router.delete('/deleteMenu/:MenuID', verifyToken, isRestaurant, deleteMenuItem);
 
 //search menu items
 router.post('/SearchMenu', searchMenuItems);
+
+//get all items
+router.get('/getAllMenu',verifyToken,getAllMenu);
+
+//get single item
+router.get('/getItem',verifyToken ,getSingleItem);
 
 export default router;
