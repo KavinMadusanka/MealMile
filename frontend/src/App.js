@@ -13,6 +13,7 @@ import DeliveryHistory from './pages/delivery/DeliveryHistory';
 import DeliveryRequests from './pages/delivery/DeliveryRequests';
 import TrackingUpdates from './pages/delivery/TrackingUpdates';
 import Login from './pages/UserLogin'
+import Carts from './pages/order/Carts';
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/deliveryHistory" element={<DeliveryHistory />} />
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
         <Route path="/trackingUpdates" element={<TrackingUpdates />} />
+        <Route path="/carts" element={<Carts />} />
 
       </Routes>
     </>
