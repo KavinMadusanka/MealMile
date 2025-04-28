@@ -4,6 +4,7 @@ const DriverSchema = new mongoose.Schema({
   name: String,
   phone: String,
   email: String,
+  address: String,
   isAvailable: { type: Boolean, default: true },
   currentLocation: {
     lat: Number,
