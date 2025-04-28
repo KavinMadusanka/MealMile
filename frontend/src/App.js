@@ -34,6 +34,7 @@ function App() {
         <Route path="/deliveryHistory" element={<DeliveryHistory />} />
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
         <Route path="/trackingUpdates" element={<TrackingUpdates />} />
+        <Route path="/carts" element={<Carts />} />
 
       </Routes>
     </>
