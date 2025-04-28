@@ -1,3 +1,4 @@
+import menuModel from "../models/menuModel.js";
 import MenuItem from "../models/menuModel.js";
 
 // Add new menu item
@@ -18,9 +19,9 @@ export const addMenuItem = async (req, res) => {
         });
 
         const savedItem = await newItem.save();
-        res.status(201).json({ success: true, data: savedItem });
+        res.status(201).send({ success: true, data: savedItem });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -37,12 +38,12 @@ export const updateMenuItem = async (req, res) => {
         );
 
         if (!updatedItem) {
-            return res.status(404).json({ success: false, message: "Menu item not found or unauthorized" });
+            return res.status(404).send({ success: false, message: "Menu item not found or unauthorized" });
         }
 
-        res.status(200).json({ success: true, data: updatedItem });
+        res.status(200).send({ success: true, data: updatedItem });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -55,12 +56,12 @@ export const deleteMenuItem = async (req, res) => {
         const deletedItem = await MenuItem.findOneAndDelete({ _id: id, restaurantId });
 
         if (!deletedItem) {
-            return res.status(404).json({ success: false, message: "Menu item not found or unauthorized" });
+            return res.status(404).send({ success: false, message: "Menu item not found or unauthorized" });
         }
 
-        res.status(200).json({ success: true, message: "Menu item deleted successfully" });
+        res.status(200).send({ success: true, message: "Menu item deleted successfully" });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
 
@@ -76,8 +77,45 @@ export const searchMenuItems = async (req, res) => {
             ]
         });
 
-        res.status(200).json({ success: true, data: items });
+        res.status(200).send({ success: true, data: items });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).send({ success: false, message: error.message });
     }
 };
+
+
+// get all menu items
+export const getAllMenu = async (req,res) => {
+    try {
+        const MenuItems = await menuModel.find({}).select("-image").limit(12).sort({createdAt: -1});
+
+        res.status(200).send({
+            success:true,
+            MenuItems            
+        })
+    } catch (error) {
+        res.status(500).send({
+            success:false,
+            message: 'Error fetching Menu Items'
+        })
+    }
+}
+
+//get single item
+export const getSingleItem = async (req, res) => {
+    try {
+        const id = req.body._id;
+        const item = await menuModel.findById({id});
+        req.status(200).send({
+            success:true,
+            message:' Items getting successfull.',
+            item
+        })
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message:'Error getting single item.'
+        })
+    }
+}
+

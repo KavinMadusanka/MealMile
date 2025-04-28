@@ -99,8 +99,8 @@ const RestaurantRegistration = () => {
         </LoadScript>
 
         {/* Show lat/lng */}
-        <p><strong>Latitude:</strong> {formData.lat}</p>
-        <p><strong>Longitude:</strong> {formData.lng}</p>
+        {/* <p><strong>Latitude:</strong> {formData.lat}</p>
+        <p><strong>Longitude:</strong> {formData.lng}</p> */}
 
         <button type="submit" style={{ marginTop: '20px', marginBottom: ' 50px' }}>Register</button>
       </form>
