@@ -13,6 +13,8 @@ import DeliveryHistory from './pages/delivery/DeliveryHistory';
 import DeliveryRequests from './pages/delivery/DeliveryRequests';
 import TrackingUpdates from './pages/delivery/TrackingUpdates';
 import Login from './pages/UserLogin'
+import Carts from './pages/order/Carts';
+import MenuItemForm from './pages/restaurant/MenuItemForm'
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
         <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
+        <Route path="/addItem" element={<MenuItemForm />} />
         <Route path="/deliveryHistory" element={<DeliveryHistory />} />
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
         <Route path="/trackingUpdates" element={<TrackingUpdates />} />
