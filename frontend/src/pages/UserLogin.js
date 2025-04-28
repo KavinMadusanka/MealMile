@@ -4,6 +4,7 @@ import { useAuth } from '../context/auth.js'
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import Layout from '../components/Layout/Layout';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Login = () => {
     
                 // Redirect based on role
                 if (role === 3) {
-                    navigate('/deliveryDashboard');  // Redirect =delic=very drivers to delivery dashboard
+                    navigate('/deliveryDashboard');  // Redirect delivery drivers to delivery dashboard
                 } else {
                     navigate('/');  // Redirect others to homepage
                 }
@@ -53,28 +54,30 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin} style={styles.form}>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>Login</button>
-      </form>
-    </div>
+    <Layout>
+      <div style={styles.container}>
+        <h2>Login</h2>
+        <form onSubmit={handleLogin} style={styles.form}>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>Login</button>
+        </form>
+      </div>
+    </Layout>
   );
 }
 
@@ -100,12 +103,15 @@ const styles = {
   button: {
     padding: '10px',
     fontSize: '16px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
+    backgroundColor: '#EEEEEE',
+    color: '#7D0A0A',
     border: 'none',
     cursor: 'pointer',
     borderRadius: '4px',
+    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',  // Stronger shadow
+    transition: 'box-shadow 0.3s ease',  // Smooth transition for shadow effect
   },
 };
+
 
 export default Login;

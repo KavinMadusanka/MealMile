@@ -24,7 +24,7 @@ export const requireSignIn = async (req , res, next) => {
 export const verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.access_token;
-        console.log(token);
+        // console.log(token);
 
         //check token is available or not. token is not available mean user not login
         if(!token){
