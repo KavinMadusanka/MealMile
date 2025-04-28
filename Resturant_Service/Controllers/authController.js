@@ -102,10 +102,12 @@ export const loginController = async (req,res) => {
         }).send({
             success:true, 
             message:'Login successfully',
-            user:{
-                name:user.name,
-                email:user.email,
+            user: {
+                name: user.name,
                 address: user.address,
+                email: user.email,
+                id: user.id,
+                role: user.role,
             },
             token,
             role: user.role,

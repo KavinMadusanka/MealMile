@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     user: null,
     token: "",
-    role: ""
+    role: "",
   });
 
   useEffect(() => {
