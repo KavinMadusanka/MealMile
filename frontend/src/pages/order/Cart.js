@@ -1,170 +1,222 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import '../../components/style/cartDetails.css';
+import Layout from '../../components/Layout/Layout';
 
 const Cart = () => {
     const [cartDetails, setCartDetails] = useState(null);
+    const [phoneNo, setPhoneNo] = useState('');
     const [deliveryAddress, setDeliveryAddress] = useState('');
-    const { cid, rid } = useParams(); // Get cid and rid from URL params
+    const [quantities, setQuantities] = useState({});
+    const { cid, rid } = useParams();
+    const navigate = useNavigate();
 
-    // Fetch the cart details based on cid and rid
     const fetchCartDetails = async () => {
-        const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}`);
-        const data = await res.json();
-        setCartDetails(data);
+        try {
+            const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}`);
+            if (!res.ok) throw new Error('Failed to fetch cart details');
+            const data = await res.json();
+            setCartDetails(data);
+
+            // Initialize quantities for input fields
+            if (data.items) {
+                const qtyMap = {};
+                data.items.forEach(item => {
+                    qtyMap[item.itemId] = item.quantity;
+                });
+                setQuantities(qtyMap);
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
     };
 
-    // Handle deleting an item from the cart
     const deleteItem = async (itemId) => {
-        const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}/${itemId}`, {
-            method: 'DELETE',
-        });
-
-        if (res.ok) {
-            fetchCartDetails();
-        } else {
-            console.error('Failed to delete item');
+        const confirmDelete = window.confirm('Are you sure you want to remove this item from your cart?');
+        if (!confirmDelete) return;
+    
+        try {
+            const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}/${itemId}`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                fetchCartDetails();
+            } else {
+                console.error('Failed to delete item');
+            }
+        } catch (error) {
+            console.error(error.message);
         }
-    };
+    };    
 
-    // Handle updating the quantity of an item
     const updateQuantity = async (itemId, newQuantity) => {
-        const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}/${itemId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                quantity: newQuantity,
-            }),
-        });
-
-        if (res.ok) {
-            fetchCartDetails();
-        } else {
-            console.error('Failed to update quantity');
+        try {
+            const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}/${itemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+            });
+            if (res.ok) {
+                fetchCartDetails();
+            } else {
+                console.error('Failed to update quantity');
+            }
+        } catch (error) {
+            console.error(error.message);
         }
     };
 
-    // Handle placing the order
     const placeOrder = async () => {
+        if (!phoneNo.trim()) {
+            alert('Please enter a phone number');
+            return;
+        }
         if (!deliveryAddress.trim()) {
             alert('Please enter a delivery address');
             return;
         }
 
-        const orderData = {
-            cartId: cid,
-            customerId: 'customer-id-placeholder', // Replace with actual customer ID logic
-            restaurantId: rid,
-            items: cartDetails.items.map(item => ({
-                itemId: item.itemId,
-                quantity: item.quantity,
-            })),
-            totalAmount: cartDetails.totalAmount,
-            deliveryAddress,
-        };
+        if (!cartDetails?._id) {
+            alert('Cart ID not found');
+            return;
+        }
 
-        const res = await fetch(`http://localhost:8089/api/orders/${cid}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        });
+        try {
+            const res = await fetch(`http://localhost:8089/api/orders/${cartDetails._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ phoneNo, deliveryAddress }),
+            });
 
-        if (res.ok) {
-            alert('Order placed successfully!');
-        } else {
-            console.error('Failed to place the order');
-            alert('Something went wrong. Please try again later.');
+            if (res.ok) {
+                alert('Order placed successfully!');
+                navigate('/carts');
+            } else {
+                console.error('Failed to place the order');
+                alert('Something went wrong. Please try again later.');
+            }
+        } catch (error) {
+            console.error(error.message);
         }
     };
 
     useEffect(() => {
         fetchCartDetails();
-    }, [cid, rid]); // Fetch when cid or rid changes
+    }, [cid, rid]);
 
     return (
-        <div className="cart-content">
-            <h2>Cart Details</h2>
-            {cartDetails ? (
-                <div>
-                    <h4>Items:</h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {cartDetails.items && cartDetails.items.length > 0 ? (
-                                cartDetails.items.map((item) => (
-                                    <tr key={item.itemId}>
-                                        <td>{item.itemId}</td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                defaultValue={item.quantity}
-                                                min="1"
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        const newQuantity = parseInt(e.target.value, 10);
-                                                        if (newQuantity >= 1) {
-                                                            updateQuantity(item.itemId, newQuantity);
-                                                        }
-                                                    }
-                                                }}
-                                                style={{ width: '60px' }}
-                                            />
-                                        </td>
-                                        <td>{item.price || 'N/A'}</td>
-                                        <td>
-                                            <FaTrash
-                                                onClick={() => deleteItem(item.itemId)}
-                                                style={{ color: '#D32F2F', cursor: 'pointer' }}
-                                            />
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
+        <Layout>
+            <div className="cart-content">
+                <h2>Cart Details</h2>
+                {cartDetails ? (
+                    <div>
+                        <h4>Items:</h4>
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colSpan="4">No items in the cart.</td>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {cartDetails.items && cartDetails.items.length > 0 ? (
+                                    cartDetails.items.map((item) => (
+                                        <tr key={item.itemId}>
+                                            <td>{item.itemId}</td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    value={quantities[item.itemId] || 1}
+                                                    min="1"
+                                                    onChange={(e) => {
+                                                        const newQuantities = { ...quantities };
+                                                        newQuantities[item.itemId] = parseInt(e.target.value, 10);
+                                                        setQuantities(newQuantities);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            const newQuantity = parseInt(e.target.value, 10);
+                                                            if (newQuantity >= 1) {
+                                                                updateQuantity(item.itemId, newQuantity);
+                                                            }
+                                                        }
+                                                    }}
+                                                    style={{ width: '60px' }}
+                                                />
+                                            </td>
+                                            <td>{item.price || 'N/A'}</td>
+                                            <td>
+                                                <FaTrash
+                                                    onClick={() => deleteItem(item.itemId)}
+                                                    style={{ color: '#D32F2F', cursor: 'pointer' }}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="4">No items in the cart.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
 
-                    <div className="total">
-                        <p><strong>Total Amount: </strong>{cartDetails.totalAmount}</p>
-                    </div>
+                        <div className="total">
+                            <p><strong>Total Amount: </strong>Rs. {cartDetails.totalAmount.toFixed(2)}</p>
+                        </div>
 
-                    {/* Delivery Address and Place Order */}
-                    <div className="delivery-address">
-                        <h4>Enter Delivery Address</h4>
-                        <textarea
-                            placeholder="Enter your delivery address"
-                            value={deliveryAddress}
-                            onChange={(e) => setDeliveryAddress(e.target.value)}
-                            rows="4"
-                            style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }}
-                        />
-                        <button
-                            className="place-order-btn"
-                            onClick={placeOrder}
-                        >
-                            Place Order
-                        </button>
+                        {/* Phone Number and Delivery Address */}
+                        <div className="order-form">
+                            <h4>Enter Phone Number</h4>
+                            <input
+                                type="text"
+                                placeholder="Enter your phone number"
+                                value={phoneNo}
+                                onChange={(e) => setPhoneNo(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ccc',
+                                    marginBottom: '15px'
+                                }}
+                            />
+
+                            <h4>Enter Delivery Address</h4>
+                            <textarea
+                                placeholder="Enter your delivery address"
+                                value={deliveryAddress}
+                                onChange={(e) => setDeliveryAddress(e.target.value)}
+                                rows="4"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ccc',
+                                    marginBottom: '20px'
+                                }}
+                            />
+                            
+                            <button
+                                className="place-order-btn"
+                                onClick={placeOrder}
+                            >
+                                Place Order
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <p>Loading cart details...</p>
-            )}
-        </div>
+                ) : (
+                    <p>Loading cart details...</p>
+                )}
+            </div>
+        </Layout>
     );
 };
 
