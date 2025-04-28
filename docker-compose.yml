@@ -49,8 +49,8 @@ services:
   frontend:
     build: ./frontend
     container_name: frontend
-    # env_file: ./frontend/.env
-    ports: ["3000:80"]
+    ports: ["3000:3000"]
+    volumes: [./frontend:/app, /app/node_modules]
     depends_on:
       [
         resturant_service,

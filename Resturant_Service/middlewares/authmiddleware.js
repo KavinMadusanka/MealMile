@@ -5,7 +5,7 @@ import userModel from '../models/userModel.js';
 export const requireSignIn = async (req , res, next) => {
     try {
         const decode = JWT.verify(req.headers.authorization, process.env.JWT_SECRET);
-        req.user = decode;
+        req.user = await userModel.findById(decoded.id).select("-password");
         next();
     } catch (error) {
         console.log(error);
@@ -24,6 +24,10 @@ export const requireSignIn = async (req , res, next) => {
 export const verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.access_token;
+
+        if (!token && req.headers.authorization) {
+            token = req.headers.authorization;
+        }
 
         // console.log(token);
 

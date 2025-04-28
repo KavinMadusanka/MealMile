@@ -1,27 +1,51 @@
 import menuModel from "../models/menuModel.js";
-import MenuItem from "../models/menuModel.js";
+import fs from 'fs';
 
 // Add new menu item
 export const addMenuItem = async (req, res) => {
     try {
-        const { name, description, price, category, image, tags, isAvailable } = req.body;
-        const restaurantId = req.user._id; // assuming you attach the logged-in user to req.user
 
-        const newItem = new MenuItem({
+        const { name, description, price, category, tags, isAvailable, restaurantId } = req.body;
+        const { image } = req.files;
+
+        // if (!req.user) {
+        //     console.error('User not authenticated!');
+        //     return res.status(401).send({ success: false, message: 'User not authenticated' });
+        // }
+
+        // const restaurantId = req.user._id; // Get logged-in user's ID
+        // console.log('Restaurant ID:', restaurantId); // Check if the ID is correctly logged
+
+        const newItem = new menuModel({
             restaurantId,
             name,
             description,
             price,
             category,
-            image,
-            tags,
+            tags: tags.split(','),
             isAvailable
         });
 
+        if (image && image.data && image.mimetype) {
+            newItem.image.data = image.data;
+            newItem.image.contentType = image.mimetype;
+        }
+
         const savedItem = await newItem.save();
-        res.status(201).send({ success: true, data: savedItem });
+        console.log('Menu item added:', savedItem); // Log the saved item
+
+        res.status(200).send({ 
+            success: true,
+            message: 'New menu item added successfully.', 
+            data: savedItem 
+        });
     } catch (error) {
-        res.status(500).send({ success: false, message: error.message });
+        console.error('Error adding menu item:', error); // Log any errors
+        res.status(500).send({
+            success: false,
+            message: 'Error adding new menu item.',
+            error: error.message || error // Send back the actual error message
+        });
     }
 };
 
@@ -31,7 +55,7 @@ export const updateMenuItem = async (req, res) => {
         const { id } = req.params;
         const restaurantId = req.user._id;
 
-        const updatedItem = await MenuItem.findOneAndUpdate(
+        const updatedItem = await menuModel.findOneAndUpdate(
             { _id: id, restaurantId },
             req.body,
             { new: true }
@@ -53,7 +77,7 @@ export const deleteMenuItem = async (req, res) => {
         const { id } = req.params;
         const restaurantId = req.user._id;
 
-        const deletedItem = await MenuItem.findOneAndDelete({ _id: id, restaurantId });
+        const deletedItem = await menuModel.findOneAndDelete({ _id: id, restaurantId });
 
         if (!deletedItem) {
             return res.status(404).send({ success: false, message: "Menu item not found or unauthorized" });
@@ -70,7 +94,7 @@ export const searchMenuItems = async (req, res) => {
     try {
         const { keyword } = req.query;
 
-        const items = await MenuItem.find({
+        const items = await menuModel.find({
             $or: [
                 { name: { $regex: keyword, $options: "i" } },
                 { tags: { $regex: keyword, $options: "i" } }
