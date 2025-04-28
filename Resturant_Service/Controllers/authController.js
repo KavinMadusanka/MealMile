@@ -180,3 +180,19 @@ export const getAllUsers = async (req, res) => {
         })
     }
 }
+
+
+
+
+/** ======================================================================================== */
+
+// Controller function to get all restaurants - sandamnini
+export const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await userModel.find({ role: 2 }).select('_id name');
+    res.status(200).json({ success: true, restaurants });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch restaurants' });
+  }
+};
