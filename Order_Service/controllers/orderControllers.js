@@ -161,6 +161,31 @@ const updateStatus = asyncHandler(async(req,res) => {
     res.status(200).json({message: `Update status for ${req.params.id}`});
 });
 
+
+
+
+
+
+// Update Payment Status
+const updatePaymentStatus = async (req, res) => {
+    try {
+      const { paymentStatus } = req.body;
+      const order = await Order.findById(req.params.oid);
+  
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+  
+      order.paymentStatus = paymentStatus || order.paymentStatus;
+      await order.save();
+  
+      res.status(200).json({ message: "Payment status updated", order });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  
 module.exports = {
     getOrders,
     createOrder,
@@ -168,5 +193,6 @@ module.exports = {
     updateOrder,
     deleteOrder,
     trackStatus,
-    updateStatus
+    updateStatus,
+    updatePaymentStatus
 }
