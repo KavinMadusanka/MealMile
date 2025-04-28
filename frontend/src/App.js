@@ -1,6 +1,7 @@
 import './App.css';
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentCancel from "./pages/payment/PaymentCancel";
@@ -11,7 +12,8 @@ import RestaurantRegistration  from './pages/restaurant/RestaurantRegistration';
 import DeliveryHistory from './pages/delivery/DeliveryHistory';
 import DeliveryRequests from './pages/delivery/DeliveryRequests';
 import TrackingUpdates from './pages/delivery/TrackingUpdates';
-import { Toaster } from 'react-hot-toast';
+import Login from './pages/UserLogin'
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/Loginpage" element={<Login />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel" element={<PaymentCancel />} />
