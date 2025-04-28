@@ -187,6 +187,49 @@ const removeItem = asyncHandler(async(req,res) => {
     });
 });
 
+// @desc Edit quantity of an item in cart
+// @route PUT /api/cart/:cid/:rid/:iid
+const editQuantity = asyncHandler(async (req, res) => {
+    const { cid, rid, iid } = req.params;
+    const { quantity } = req.body;
+
+    if (!cid || !rid || !iid) {
+        res.status(400);
+        throw new Error("CustomerId, RestaurantId, and ItemId are required");
+    }
+
+    if (typeof quantity !== "number" || quantity < 1) {
+        res.status(400);
+        throw new Error("Valid quantity is required (minimum 1)");
+    }
+
+    const cart = await Cart.findOne({ customerId: cid, restaurantId: rid });
+
+    if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+    }
+
+    const item = cart.items.find(i => i.itemId === iid);
+
+    if (!item) {
+        return res.status(404).json({ message: "Item not found in the cart" });
+    }
+
+    item.quantity = quantity;
+
+    cart.totalAmount = cart.items.reduce(
+        (sum, i) => sum + i.quantity * (i.price || 0),
+        0
+    );
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item quantity updated successfully",
+        cart
+    });
+});
+
 
 
 module.exports = {
@@ -195,5 +238,6 @@ module.exports = {
     getCart,
     updateCart,
     removeItem,
-    clearCart
+    clearCart,
+    editQuantity
 };
