@@ -24,12 +24,7 @@ export const requireSignIn = async (req , res, next) => {
 export const verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.access_token;
-
-        if (!token && req.headers.authorization) {
-            token = req.headers.authorization;
-        }
-
-        // console.log(token);
+        console.log(token);
 
         //check token is available or not. token is not available mean user not login
         if(!token){
@@ -84,10 +79,11 @@ export const isAdmin = async (req,res,next) => {
 //check admin access
 export const isRestaurant = async (req,res,next) => {
     try {
+        console.log('req.user')
         console.log(req.user);
         const user = await userModel.findById(req.user.id);
         console.log(user);
-        if(user.role !==2 ){
+        if(user.role !== 2 ){
             return res.status(404).send({
                 success:false,
                 message: 'Unauthorized Access'
