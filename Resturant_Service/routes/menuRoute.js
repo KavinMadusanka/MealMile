@@ -16,16 +16,16 @@ import uploadMiddleware from '../middlewares/uploadMiddleware.js'
 const router = express.Router();
 
 //create menu items using Id
-router.post('/AddMenu',uploadMiddleware, addMenuItem);
+router.post('/AddMenu',verifyToken,isRestaurant,uploadMiddleware, addMenuItem);
 
 //update menu items using Id
-router.put('/updateMenu/:MenuID', updateMenuItem);
+router.put('/updateMenu/:MenuID',verifyToken,isRestaurant, updateMenuItem);
 
 //delete menu items using Id
-router.delete('/deleteMenu/:MenuID', deleteMenuItem);
+router.delete('/deleteMenu/:MenuID',verifyToken,isRestaurant, deleteMenuItem);
 
 //search menu items
-router.post('/SearchMenu', searchMenuItems);
+router.post('/SearchMenu',verifyToken,isRestaurant, searchMenuItems);
 
 //get all items
 router.get('/getAllMenu',verifyToken,getAllMenu);

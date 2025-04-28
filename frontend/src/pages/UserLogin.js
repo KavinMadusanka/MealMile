@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/auth.js'
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Login = () => {
                     user,
                     role
                 }));
+                Cookies.set('access_token', token, { expires: 7 });
     
                 // Redirect based on role
                 if (role === 3) {

@@ -10,26 +10,14 @@ const MenuItemForm = () => {
   const [category, setCategory] = useState('');
   const [image, setImage] = useState(null);
   const [tags, setTags] = useState('');
-  const [restaurantId, setrestaurantId] = useState('');
   const [isAvailable, setIsAvailable] = useState(true);
   const [role, setRole] = useState('');
   const [auth,setAuth] = useAuth();
-
-  useEffect(() => {
-    if (auth && auth.user) {
-        setrestaurantId(auth.user.id);
-        setRole(auth.user.role);
-    }
-  }, [auth]);
 
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(role !== 2){
-      toast.error('You are not allowed to add menu Items');
-      return;
-    }
 
     try {
         // Prepare data to be sent to the backend
@@ -40,28 +28,26 @@ const MenuItemForm = () => {
         newItem.append("category",category);
         newItem.append("isAvailable",isAvailable);
         newItem.append("tags",tags);
-        newItem.append("restaurantId",restaurantId);
 
         if (image) {
             newItem.append("image", image);
           }
         // Send POST request to add menu item
-        const res = await axios.post('http://localhost:8086/api/v1/menuItem/AddMenu', newItem );
-        // , {
-        //   headers: {
-        //     // 'Content-Type':'application/json',
-        //     'Authorization': `Bearer ${auth?.token}`, // Send token in Authorization header
-        //     'Content-Type': 'multipart/form-data' // Set content type for form data
-        //   },
-        //   withCredentials: true,
-        // });
+        const res = await axios.post('http://localhost:8086/api/v1/menuItem/AddMenu', newItem 
+        // );
+          , {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            withCredentials: true // allow cookies to be sent
+          });
 
         console.log(res.data);
 
         console.log('awaa2')
         if (res.data.success) {
             toast.success(res.data.message);
-            // Optionally reset the form
+            //reset the form
             setName('');
             setDescription('');
             setPrice('');
@@ -74,7 +60,7 @@ const MenuItemForm = () => {
         }
     } catch (error) {
       console.error('Error adding menu item:', error);
-      toast.error('Somthing in wrong adding menu item');
+      toast.error('Access Denied, Unauthorized Access.');
     }
   };
 

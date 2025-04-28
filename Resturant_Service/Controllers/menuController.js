@@ -5,16 +5,11 @@ import fs from 'fs';
 export const addMenuItem = async (req, res) => {
     try {
 
-        const { name, description, price, category, tags, isAvailable, restaurantId } = req.body;
+        // console.log('awa')
+        const { name, description, price, category, tags, isAvailable } = req.body;
         const { image } = req.files;
 
-        // if (!req.user) {
-        //     console.error('User not authenticated!');
-        //     return res.status(401).send({ success: false, message: 'User not authenticated' });
-        // }
-
-        // const restaurantId = req.user._id; // Get logged-in user's ID
-        // console.log('Restaurant ID:', restaurantId); // Check if the ID is correctly logged
+        const restaurantId = req.user.id;
 
         const newItem = new menuModel({
             restaurantId,
@@ -32,7 +27,7 @@ export const addMenuItem = async (req, res) => {
         }
 
         const savedItem = await newItem.save();
-        console.log('Menu item added:', savedItem); // Log the saved item
+        console.log('Menu item added:', savedItem);
 
         res.status(200).send({ 
             success: true,
@@ -40,7 +35,7 @@ export const addMenuItem = async (req, res) => {
             data: savedItem 
         });
     } catch (error) {
-        console.error('Error adding menu item:', error); // Log any errors
+        console.error('Error adding menu item:', error);
         res.status(500).send({
             success: false,
             message: 'Error adding new menu item.',
