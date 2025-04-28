@@ -4,13 +4,13 @@ import Delivery from "../models/Delivery.js";
 // Create a new driver
 export const createDriverController = async (req, res) => {
   try {
-    const { name, phone, email, currentLocation } = req.body;
+    const { name, phone, email, address, currentLocation } = req.body;
 
-    if (!name || !phone || !email || !currentLocation) {
+    if (!name || !phone || !email || !address || !currentLocation) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newDriver = new Driver({ name, phone, email, currentLocation });
+    const newDriver = new Driver({ name, phone, email, address, currentLocation });
     await newDriver.save();
 
     res.status(201).json({
@@ -180,6 +180,45 @@ export const getDriverByIdController = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error retrieving driver",
+      error: error.message,
+    });
+  }
+};
+
+// Update driver details
+// Combined Update Driver Controller
+export const updateDriverController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, phone, email, address, isAvailable, currentLocation } = req.body;
+
+    const driver = await Driver.findById(id);
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    // Update only fields that are provided
+    if (name) driver.name = name;
+    if (phone) driver.phone = phone;
+    if (email) driver.email = email;
+    if (address) driver.address = address;
+    if (typeof isAvailable === 'boolean') driver.isAvailable = isAvailable;
+    if (currentLocation && typeof currentLocation.lat === 'number' && typeof currentLocation.lng === 'number') {
+      driver.currentLocation = currentLocation;
+    }
+
+    await driver.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Driver updated successfully",
+      driver,
+    });
+  } catch (error) {
+    console.error("Update Driver Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating driver",
       error: error.message,
     });
   }
