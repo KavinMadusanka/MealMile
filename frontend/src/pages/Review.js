@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import ReviewForm from '../components/ReviewForm';
 import ReviewList from '../components/ReviewList';
-import Notification from '../components/Notification'; // ✅ Import Notification
-
-const mockRestaurants = [
-  { id: 'resto123', name: 'Pizza Place' },
-  { id: 'resto456', name: 'Burger Queen' },
-  { id: 'resto789', name: 'Noodle Nest' }
-];
+import Notification from '../components/Notification';
+import Layout from '../components/Layout/Layout';
 
 function Review() {
   const [restaurantId, setRestaurantId] = useState(mockRestaurants[0].id);
@@ -26,6 +21,7 @@ function Review() {
   };
 
   return (
+    <Layout>
     <div style={{ maxWidth: "1100px", margin: "auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
       {/* Notification Box */}
       <Notification 
@@ -60,16 +56,7 @@ function Review() {
         <div>
           <button
             onClick={() => setShowModal(true)}
-            style={{
-              padding: "10px 20px",
-              background: "#007bff",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              fontSize: "16px",
-              cursor: "pointer",
-              marginTop: "10px"
-            }}
+            style={{ padding: "10px 20px", background: "#7D0A0A", color: "#fff", border: "none", borderRadius: "5px", fontSize: "16px", cursor: "pointer", marginTop: "10px" }}
           >
             ✍️ Write a Review
           </button>
@@ -101,6 +88,7 @@ function Review() {
         </div>
       )}
     </div>
+    </Layout>
   );
 }
 
