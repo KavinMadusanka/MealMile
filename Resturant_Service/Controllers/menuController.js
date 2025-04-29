@@ -146,8 +146,9 @@ export const ItemPhotoController = async(req,res) => {
 export const getSingleItem = async (req, res) => {
     try {
         const id = req.params.id;
-        const item = await menuModel.findById({id});
-        req.status(200).send({
+        const item = await menuModel.findById(id);
+        console.log(item),
+        res.status(200).send({
             success:true,
             message:' Items getting successfull.',
             item
@@ -156,7 +157,6 @@ export const getSingleItem = async (req, res) => {
         res.status(500).send({
             success: false,
             message:'Error getting single item.'
-        })
-    }
+        })
+    }
 }
-
