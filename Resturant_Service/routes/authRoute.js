@@ -4,7 +4,8 @@ import { registerController,
     Signout,
     userDelete,
     getAllUsers,
-    getAllRestaurants
+    getAllRestaurants,
+    getSingleUser
  } from '../Controllers/authController.js';
 import { verifyToken,
     isAdmin
@@ -26,6 +27,9 @@ router.delete('/deleteUser/:userId',verifyToken, userDelete)
 
 //get all users
 router.get('/getAllUsers',verifyToken, isAdmin, getAllUsers);
+
+//get single user
+router.get('/getSingleUser/:Uid',getSingleUser);
 
 // Route to fetch all restaurants
 router.get('/restaurants', getAllRestaurants );
