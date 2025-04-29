@@ -77,17 +77,27 @@ const Header = () => {
             </Typography>
 
 
-                <Button component={Link} to="/" sx={buttonStyle('/')}>
-                    Home
-                </Button>
+                {auth?.user?.role === 2 ? (
+                    // Restaurant role: only show their home
+                    <Button component={Link} to="/RestaurantHome" sx={buttonStyle('/RestaurantHome')}>
+                        Home
+                    </Button>
+                ) : (
+                    // All other users see default navigation
+                    <>
+                        <Button component={Link} to="/" sx={buttonStyle('/')}>
+                            Home
+                        </Button>
 
-                <Button component={Link} to="/about" sx={buttonStyle('/about')}>
-                    About Us
-                </Button>
+                        <Button component={Link} to="/about" sx={buttonStyle('/about')}>
+                            About Us
+                        </Button>
 
-                <Button component={Link} to="/carts" sx={buttonStyle('/carts')}>
-                    Cart
-                </Button>
+                        <Button component={Link} to="/carts" sx={buttonStyle('/carts')}>
+                            Cart
+                        </Button>
+                    </>
+                )}
 
                 {!auth?.user ? (
                     <>

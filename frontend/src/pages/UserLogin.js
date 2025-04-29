@@ -39,6 +39,8 @@ const Login = () => {
                 // Redirect based on role
                 if (role === 3) {
                     navigate('/deliveryDashboard');  // Redirect delivery drivers to delivery dashboard
+                }else if (role === 2){
+                  navigate('/RestaurantHome');
                 } else {
                     navigate('/');  // Redirect others to homepage
                 }

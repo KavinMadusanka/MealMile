@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Layout from '../../components/Layout/Layout';
 
 const RestaurantHome = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -10,12 +11,12 @@ const RestaurantHome = () => {
 
   // Get logged-in restaurant ID from token
   const getRestaurantId = () => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('auth');
     if (!user) return null;
   
     try {
       const parsedUser = JSON.parse(user);
-      return parsedUser._id; // or `restaurantId`, depending on how you store it
+      return parsedUser.user.id; // or `restaurantId`, depending on how you store it
     } catch (err) {
       console.error("Error parsing user from localStorage", err);
       return null;
@@ -46,13 +47,12 @@ const RestaurantHome = () => {
     try {
       const token = Cookies.get('access_token');
       const res = await axios.delete(`http://localhost:8086/api/v1/menuItem/deleteMenu/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       });
 
+      console.log('awa')
       if (res.data.success) {
-        toast.success('Item deleted');
+        toast.success(res.data.message);
         fetchMenuItems(); // refresh list
       } else {
         toast.error('Failed to delete');
@@ -71,11 +71,12 @@ const RestaurantHome = () => {
   }, []);
 
   return (
+    <Layout>
     <div style={{ padding: '30px' }}>
       <h2>My Menu Items</h2>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{ backgroundColor: '#f2f2f2' }}>
+          <tr style={{ backgroundColor: '#EEEEEE' }}>
             <th style={thStyle}>Name</th>
             <th style={thStyle}>Category</th>
             <th style={thStyle}>Price (Rs.)</th>
@@ -99,6 +100,7 @@ const RestaurantHome = () => {
         </tbody>
       </table>
     </div>
+  </Layout>
   );
 };
 
