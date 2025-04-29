@@ -38,6 +38,7 @@ function App() {
         <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
         <Route path="/RestaurantHome" element={<RestaurantHome />} />
         <Route path="/addItem" element={<MenuItemForm />} />
+        {/* <Route path="/menu/edit/:itemId" element={<MenuItemForm />} /> */}
         <Route path="/deliveryHistory" element={<DeliveryHistory />} />
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
         <Route path="/trackingUpdates" element={<TrackingUpdates />} />

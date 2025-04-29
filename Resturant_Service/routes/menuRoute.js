@@ -20,7 +20,7 @@ const router = express.Router();
 router.post('/AddMenu',verifyToken,isRestaurant,uploadMiddleware, addMenuItem);
 
 //update menu items using Id
-router.put('/updateMenu/:MenuID',verifyToken,isRestaurant, updateMenuItem);
+router.put('/updateMenu/:MenuID',verifyToken,isRestaurant,uploadMiddleware, updateMenuItem);
 
 //delete menu items using Id
 router.delete('/deleteMenu/:MenuID',verifyToken,isRestaurant, deleteMenuItem);

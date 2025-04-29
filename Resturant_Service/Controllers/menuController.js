@@ -47,12 +47,36 @@ export const addMenuItem = async (req, res) => {
 // Update menu item
 export const updateMenuItem = async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = req.params.MenuID;
         const restaurantId = req.user._id;
 
-        const updatedItem = await menuModel.findOneAndUpdate(
-            { _id: id, restaurantId },
-            req.body,
+        const {
+            name,
+            description,
+            price,
+            category,
+            isAvailable,
+            tags,
+        } = req.body;
+
+        const updateFields = {
+            name,
+            description,
+            price,
+            category,
+            isAvailable,
+            tags: tags.split(','),
+        };
+
+        if (req.file) {
+            // Process image (e.g., save to disk/cloud and store URL)
+            const imageUrl = `uploads/${req.file.originalname}`; // Example path
+            updateFields.imageUrl = imageUrl;
+        }
+
+        const updatedItem = await menuModel.findByIdAndUpdate(
+            id ,
+            updateFields,
             { new: true }
         );
 
@@ -60,11 +84,19 @@ export const updateMenuItem = async (req, res) => {
             return res.status(404).send({ success: false, message: "Menu item not found or unauthorized" });
         }
 
-        res.status(200).send({ success: true, data: updatedItem });
+        res.status(200).send({ 
+            success: true,
+            message:'Item updated successfully.',
+            data: updatedItem });
     } catch (error) {
-        res.status(500).send({ success: false, message: error.message });
+        console.error("Update Error:", error);
+        res.status(500).send({ 
+            success: false, 
+            message: 'Item update failed.' 
+         });
     }
 };
+
 
 // Delete menu item
 export const deleteMenuItem = async (req, res) => {
@@ -146,8 +178,9 @@ export const ItemPhotoController = async(req,res) => {
 export const getSingleItem = async (req, res) => {
     try {
         const id = req.params.id;
-        const item = await menuModel.findById({id});
-        req.status(200).send({
+        const item = await menuModel.findById(id);
+        // console.log(item),
+        res.status(200).send({
             success:true,
             message:' Items getting successfull.',
             item
