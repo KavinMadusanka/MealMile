@@ -49,6 +49,7 @@ const Header = () => {
         fontSize: '16px',
         '&:hover': {
             textDecoration: 'underline',
+            textDecorationThickness: '3px',
         },
         mx: 1,
     });
@@ -83,7 +84,7 @@ const Header = () => {
                     About Us
                 </Button>
 
-                <Button component={Link} to="/cart" sx={buttonStyle('/cart')}>
+                <Button component={Link} to="/carts" sx={buttonStyle('/carts')}>
                     Cart
                 </Button>
 
@@ -98,18 +99,23 @@ const Header = () => {
                     </>
                 ) : (
                     <>
-                        <Button component={Link} to="/order" sx={buttonStyle('/order')}>
-                            Orders
-                        </Button>
+                        {auth?.user?.role !== 1 && (
+                            <Button component={Link} to="/orders" sx={buttonStyle('/orders')}>
+                                Orders
+                            </Button>
+                        )}
                         <Button component={Link} to={profileLink} sx={buttonStyle(profileLink)}>
                             Profile
                         </Button>
                         <Button onClick={handleLogout} sx={{ 
                             color: '#7D0A0A',
                             fontFamily: 'Poppins, sans-serif',
+                            textUnderlineOffset: '6px',
                             textTransform: 'none',
+                            mx: 1,
                             '&:hover': {
                             textDecoration: 'underline',
+                            textDecorationThickness: '3px',
                             },
                             mx: 1,
                         }}>

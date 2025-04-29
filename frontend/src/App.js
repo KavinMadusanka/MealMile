@@ -18,6 +18,7 @@ import Cart from './pages/order/Cart';
 import MenuItemForm from './pages/restaurant/MenuItemForm'
 import Orders from './pages/order/Orders';
 import Order from './pages/order/Order';
+import Pagenotfound from './pages/pageNotFound'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<Pagenotfound />} />
         <Route path="/Loginpage" element={<Login />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
