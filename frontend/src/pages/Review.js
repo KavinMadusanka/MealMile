@@ -65,7 +65,7 @@ function Review() {
         <div>
           <button
             onClick={() => setShowModal(true)}
-            style={{ padding: "10px 20px", background: "#007bff", color: "#fff", border: "none", borderRadius: "5px", fontSize: "16px", cursor: "pointer", marginTop: "10px" }}
+            style={{ padding: "10px 20px", background: "#7D0A0A", color: "#fff", border: "none", borderRadius: "5px", fontSize: "16px", cursor: "pointer", marginTop: "10px" }}
           >
             ✍️ Write a Review
           </button>
