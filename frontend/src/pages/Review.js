@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReviewForm from '../components/ReviewForm';
 import ReviewList from '../components/ReviewList';
 import Notification from '../components/Notification';
+import Layout from '../components/Layout/Layout';
+
 
 function Review() {
   const [restaurants, setRestaurants] = useState([]);
@@ -40,6 +42,7 @@ function Review() {
   };
 
   return (
+    <Layout>
     <div style={{ maxWidth: "1100px", margin: "auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <Notification message={notification.message} type={notification.type} onClose={() => setNotification({ message: '', type: '' })} />
 
@@ -85,6 +88,7 @@ function Review() {
         </div>
       )}
     </div>
+    </Layout>
   );
 }
 
