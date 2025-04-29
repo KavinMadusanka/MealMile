@@ -189,7 +189,6 @@ export const getSingleItem = async (req, res) => {
         res.status(500).send({
             success: false,
             message:'Error getting single item.'
-        })
-    }
+        })
+    }
 }
-

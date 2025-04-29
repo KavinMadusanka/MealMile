@@ -19,19 +19,50 @@ const Cart = () => {
             const res = await fetch(`http://localhost:8089/api/cart/${cid}/${rid}`);
             if (!res.ok) throw new Error('Failed to fetch cart details');
             const data = await res.json();
-            setCartDetails(data);
-
-            if (data.items) {
-                const qtyMap = {};
-                data.items.forEach(item => {
-                    qtyMap[item.itemId] = item.quantity;
-                });
-                setQuantities(qtyMap);
-            }
+    
+            // Fetch names and prices for each item from the MenuItem microservice
+            const enrichedItems = await Promise.all(
+                data.items.map(async (item) => {
+                    try {
+                        const itemRes = await fetch(`http://localhost:8086/api/v1/menuItem/getItem/${item.itemId}`);
+                        if (!itemRes.ok) throw new Error('Failed to fetch menu item');
+                        const itemData = await itemRes.json();
+    
+                        // Make sure we access the 'item' object inside the API response
+                        return {
+                            ...item,
+                            name: itemData.item?.name || 'Unknown Item',
+                            price: itemData.item?.price || 'N/A'
+                        };
+                    } catch (e) {
+                        console.error(`Error fetching item ${item.itemId}:`, e);
+                        return {
+                            ...item,
+                            name: 'Unknown Item',
+                            price: 'N/A'
+                        };
+                    }
+                })
+            );
+    
+            // Update state with enriched items
+            const totalAmount = enrichedItems.reduce((sum, item) => {
+                const itemTotal = item.price !== 'N/A' ? item.price * item.quantity : 0;
+                return sum + itemTotal;
+            }, 0);
+            
+            setCartDetails({ ...data, items: enrichedItems, totalAmount });
+    
+            // Initialize quantity state for inputs
+            const qtyMap = {};
+            data.items.forEach(item => {
+                qtyMap[item.itemId] = item.quantity;
+            });
+            setQuantities(qtyMap);
         } catch (error) {
             console.error(error.message);
         }
-    };
+    };        
 
     const handleMapClick = (e) => {
         const lat = e.latLng.lat();
@@ -147,7 +178,7 @@ const Cart = () => {
                                 {cartDetails.items && cartDetails.items.length > 0 ? (
                                     cartDetails.items.map((item) => (
                                         <tr key={item.itemId}>
-                                            <td>{item.itemId}</td>
+                                            <td>{item.name}</td>
                                             <td>
                                                 <input
                                                     type="number"
@@ -169,7 +200,7 @@ const Cart = () => {
                                                     style={{ width: '60px' }}
                                                 />
                                             </td>
-                                            <td>{item.price || 'N/A'}</td>
+                                            <td>{item.price !== 'N/A' ? `Rs. ${(item.price * item.quantity).toFixed(2)}` : 'N/A'}</td>
                                             <td>
                                                 <FaTrash
                                                     onClick={() => deleteItem(item.itemId)}
