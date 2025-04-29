@@ -69,10 +69,10 @@ export const updateMenuItem = async (req, res) => {
 // Delete menu item
 export const deleteMenuItem = async (req, res) => {
     try {
-        const { id } = req.params;
-        const restaurantId = req.user._id;
+        const id = req.params.MenuID;
+        // const restaurantId = req.user.id;
 
-        const deletedItem = await menuModel.findOneAndDelete({ _id: id, restaurantId });
+        const deletedItem = await menuModel.findByIdAndDelete(id);
 
         if (!deletedItem) {
             return res.status(404).send({ success: false, message: "Menu item not found or unauthorized" });
