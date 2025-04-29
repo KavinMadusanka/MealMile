@@ -105,8 +105,10 @@ const Cart = () => {
             });
 
             if (res.ok) {
+                const data = await res.json(); // 👈 get created order
+                const newOrderId = data.order._id;   // 👈 assuming server returns { _id, ... }
                 alert('Order placed successfully!');
-                navigate('/carts');
+                navigate(`/payment?orderId=${newOrderId}`);
             } else {
                 console.error('Failed to place the order');
                 alert('Something went wrong. Please try again later.');
