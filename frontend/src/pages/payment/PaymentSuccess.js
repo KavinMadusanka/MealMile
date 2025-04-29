@@ -50,6 +50,7 @@ const PaymentSuccess = () => {
         {/* Heading */}
         <h2 style={styles.heading}>Payment Successful</h2>
         <p style={styles.subtext}>Thank you for your payment. Your order is being processed.</p>
+        <p style={styles.subtext}>A payment receipt has been sent to your email.</p>
 
         <hr style={styles.divider} />
 
