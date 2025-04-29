@@ -26,7 +26,7 @@ router.put('/updateMenu/:MenuID',verifyToken,isRestaurant, updateMenuItem);
 router.delete('/deleteMenu/:MenuID',verifyToken,isRestaurant, deleteMenuItem);
 
 //search menu items
-router.post('/SearchMenu',verifyToken,isRestaurant, searchMenuItems);
+router.get('/SearchMenu', searchMenuItems);
 
 //get all items
 router.get('/getAllMenu',getAllMenu);
@@ -35,6 +35,6 @@ router.get('/getAllMenu',getAllMenu);
 router.get("/getItemphoto/:pid",ItemPhotoController);
 
 //get single item
-router.get('/getItem',verifyToken ,getSingleItem);
+router.get('/getItem/:id',verifyToken ,getSingleItem);
 
 export default router;
