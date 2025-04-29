@@ -3,12 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import '../../components/style/cartDetails.css';
 import Layout from '../../components/Layout/Layout';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 const Cart = () => {
     const [cartDetails, setCartDetails] = useState(null);
     const [phoneNo, setPhoneNo] = useState('');
     const [deliveryAddress, setDeliveryAddress] = useState('');
     const [quantities, setQuantities] = useState({});
+    const [markerPosition, setMarkerPosition] = useState({ lat: 6.9271, lng: 79.8612 }); // Default position (Colombo)
     const { cid, rid } = useParams();
     const navigate = useNavigate();
 
@@ -19,7 +21,6 @@ const Cart = () => {
             const data = await res.json();
             setCartDetails(data);
 
-            // Initialize quantities for input fields
             if (data.items) {
                 const qtyMap = {};
                 data.items.forEach(item => {
@@ -30,6 +31,12 @@ const Cart = () => {
         } catch (error) {
             console.error(error.message);
         }
+    };
+
+    const handleMapClick = (e) => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+        setMarkerPosition({ lat, lng }); // Update map marker
     };
 
     const deleteItem = async (itemId) => {
@@ -78,7 +85,6 @@ const Cart = () => {
             alert('Please enter a delivery address');
             return;
         }
-
         if (!cartDetails?._id) {
             alert('Cart ID not found');
             return;
@@ -90,7 +96,12 @@ const Cart = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ phoneNo, deliveryAddress }),
+                body: JSON.stringify({
+                    phoneNo,
+                    deliveryAddress,
+                    lat: markerPosition.lat,
+                    lng: markerPosition.lng
+                }),
             });
 
             if (res.ok) {
@@ -108,6 +119,11 @@ const Cart = () => {
     useEffect(() => {
         fetchCartDetails();
     }, [cid, rid]);
+
+    const containerStyle = {
+        width: '100%',
+        height: '400px'
+    };
 
     return (
         <Layout>
@@ -172,7 +188,6 @@ const Cart = () => {
                             <p><strong>Total Amount: </strong>Rs. {cartDetails.totalAmount.toFixed(2)}</p>
                         </div>
 
-                        {/* Phone Number and Delivery Address */}
                         <div className="order-form">
                             <h4>Enter Phone Number</h4>
                             <input
@@ -203,7 +218,19 @@ const Cart = () => {
                                     marginBottom: '20px'
                                 }}
                             />
-                            
+
+                            <h4>Choose Delivery Location on Map</h4>
+                            <LoadScript googleMapsApiKey="AIzaSyBgBbw-VnWQAriox72BrPyJRyIj0qIpuOc">
+                                <GoogleMap
+                                    mapContainerStyle={containerStyle}
+                                    center={markerPosition}
+                                    zoom={15}
+                                    onClick={handleMapClick}
+                                >
+                                    <Marker position={markerPosition} />
+                                </GoogleMap>
+                            </LoadScript>
+
                             <button
                                 className="place-order-btn"
                                 onClick={placeOrder}

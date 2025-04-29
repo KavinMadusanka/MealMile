@@ -26,7 +26,7 @@ const getOrders = asyncHandler(async(req,res) => {
 // @route POST /api/orders/:cartId
 const createOrder = asyncHandler(async(req,res) => {
     const {cartId} = req.params;
-    const {phoneNo, deliveryAddress} = req.body;
+    const {phoneNo, deliveryAddress, lat, lng} = req.body;
 
     if(!cartId, !phoneNo, !deliveryAddress){
         res.status(400);
@@ -48,6 +48,8 @@ const createOrder = asyncHandler(async(req,res) => {
         totalAmount: cart.totalAmount,
         phoneNo: phoneNo,
         deliveryAddress: deliveryAddress,
+        lat: lat,
+        lng: lng,
         status: "Pending",
         paymentStatus: "Unpaid"
     });

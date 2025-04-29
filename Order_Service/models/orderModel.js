@@ -39,6 +39,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    lat: {
+        type: String
+    },
+    lng: {
+        type: String
+    },
     status: {
         type: String,
         enum: [
