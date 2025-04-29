@@ -12,6 +12,7 @@ Modal.setAppElement('#root'); // Required for accessibility
 const RestaurantHome = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [editingItem, setEditingItem] = useState(null);
   const navigate = useNavigate();
 
   const getRestaurantId = () => {
@@ -60,8 +61,9 @@ const RestaurantHome = () => {
     }
   };
 
-  const handleUpdate = (id) => {
-    navigate(`/update-menu/${id}`);
+  const handleUpdate = (item) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
   };
 
   const handleFormSuccess = () => {
@@ -97,7 +99,7 @@ const RestaurantHome = () => {
                 <td style={tdStyle}>{item.price}</td>
                 <td style={tdStyle}>{item.tags?.join(', ')}</td>
                 <td style={tdStyle}>
-                  <button style={btnStyle} onClick={() => handleUpdate(item._id)}>Update</button>
+                  <button style={btnStyle} onClick={() => handleUpdate(item)}>Update</button>
                   <button style={{ ...btnStyle, backgroundColor: '#e74c3c' }} onClick={() => handleDelete(item._id)}>Delete</button>
                 </td>
               </tr>
@@ -108,11 +110,22 @@ const RestaurantHome = () => {
         {/* Modal for New Menu Item */}
         <Modal
           isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
+          onRequestClose={() => {
+            setIsModalOpen(false);
+            setEditingItem(null); // Reset editingItem when modal is closed
+          }}
           style={customModalStyles}
         >
-          <MenuItemForm onSuccess={handleFormSuccess} onClose={() => setIsModalOpen(false)} />
+          <MenuItemForm
+            onSuccess={handleFormSuccess}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingItem(null);
+            }}
+            editingItem={editingItem} // Pass this prop
+          />
         </Modal>
+
       </div>
       <style>
       {`
