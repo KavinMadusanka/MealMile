@@ -8,8 +8,16 @@ const Carts = () => {
     const [carts, setCarts] = useState([]);
     const navigate = useNavigate();
 
+    // 🧠 Get user info from localStorage
+    // const userInfo = JSON.parse(localStorage.getItem('auth'));
+    // const cid = userInfo?.user?.id;
+    const cid = 'cus001';
+
     const fetchCarts = async () => {
-        const cid = 'cus001'; // Example customer ID
+        if (!cid) {
+            console.error('No customer ID found');
+            return;
+        }
         try {
             const res = await fetch(`http://localhost:8089/api/cart/${cid}`);
             if (!res.ok) throw new Error('Failed to fetch carts');
