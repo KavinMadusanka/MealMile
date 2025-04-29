@@ -45,7 +45,7 @@ const Login = () => {
     
                 toast.success("Login successful");
         } else {
-            toast.error('Invalid email or password ❌');
+            toast.error('Invalid email or password ');
         }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
@@ -56,7 +56,7 @@ const Login = () => {
   return (
     <Layout>
       <div style={styles.container}>
-        <h2>Login</h2>
+        <h2 style={styles.log}>Login</h2>
         <form onSubmit={handleLogin} style={styles.form}>
           <input
             type="email"
@@ -74,9 +74,29 @@ const Login = () => {
             required
             style={styles.input}
           />
-          <button type="submit" style={styles.button}>Login</button>
+          <button type="submit" className='login-button'>Login</button>
         </form>
       </div>
+      <style>
+      {`
+        .login-button {
+          padding: 10px;
+          font-size: 16px;
+          background-color: #BF3131;
+          color: #EEEEEE;
+          border: none;
+          cursor: pointer;
+          border-radius: 4px;
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .login-button:hover {
+            background-color: #7D0A0A;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+          }
+      `}
+      </style>
+
     </Layout>
   );
 }
@@ -91,6 +111,11 @@ const styles = {
     textAlign: 'center',
     backgroundColor: '#fff',
   },
+  log:{
+    color: ' #BF3131',
+    letterSpacing: '2px',      // ✅ Increase spacing between letters
+    fontFamily: 'Poppins, sans-serif',
+  },
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -100,18 +125,20 @@ const styles = {
     padding: '10px',
     fontSize: '16px',
   },
-  button: {
-    padding: '10px',
-    fontSize: '16px',
-    backgroundColor: '#EEEEEE',
-    color: '#7D0A0A',
-    border: 'none',
-    cursor: 'pointer',
-    borderRadius: '4px',
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',  // Stronger shadow
-    transition: 'box-shadow 0.3s ease',  // Smooth transition for shadow effect
-  },
+  // button: {
+  //   padding: '10px',
+  //   fontSize: '16px',
+  //   backgroundColor: '#BF3131',
+  //   color: '#EEEEEE',
+  //   border: 'none',
+  //   cursor: 'pointer',
+  //   borderRadius: '4px',
+  //   boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',  // Stronger shadow
+  //   transition: 'box-shadow 0.3s ease',  // Smooth transition for shadow effect
+  // },
+  // button:hover {
+  //   backgroundColor: '#7D0A0A',
+  // }
 };
-
 
 export default Login;

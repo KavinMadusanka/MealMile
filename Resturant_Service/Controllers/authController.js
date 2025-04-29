@@ -108,6 +108,7 @@ export const loginController = async (req,res) => {
                 email: user.email,
                 id: user.id,
                 role: user.role,
+                DriverId: user.DriverId,
             },
             token,
             role: user.role,
