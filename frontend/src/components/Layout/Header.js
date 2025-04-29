@@ -68,8 +68,9 @@ const Header = () => {
                     color: '#7D0A0A', 
                     fontFamily: 'Poppins, sans-serif',
                     textTransform: 'none',
-                    fontSize: '28px',
+                    fontSize: '30px',
                     fontWeight: 'bold', 
+                    letterSpacing: '4px',
                 }}
             >
                 MealMile

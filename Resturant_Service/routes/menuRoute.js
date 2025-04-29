@@ -4,6 +4,7 @@ import { addMenuItem,
     deleteMenuItem,
     searchMenuItems,
     getAllMenu,
+    ItemPhotoController,
     getSingleItem
  } from '../Controllers/menuController.js';
 import { verifyToken,
@@ -28,7 +29,10 @@ router.delete('/deleteMenu/:MenuID',verifyToken,isRestaurant, deleteMenuItem);
 router.post('/SearchMenu',verifyToken,isRestaurant, searchMenuItems);
 
 //get all items
-router.get('/getAllMenu',verifyToken,getAllMenu);
+router.get('/getAllMenu',getAllMenu);
+
+//get photo
+router.get("/getItemphoto/:pid",ItemPhotoController);
 
 //get single item
 router.get('/getItem',verifyToken ,getSingleItem);
