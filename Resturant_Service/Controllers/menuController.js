@@ -87,20 +87,22 @@ export const deleteMenuItem = async (req, res) => {
 // Search menu items (by name or tags)
 export const searchMenuItems = async (req, res) => {
     try {
-        const { keyword } = req.query;
-
-        const items = await menuModel.find({
-            $or: [
-                { name: { $regex: keyword, $options: "i" } },
-                { tags: { $regex: keyword, $options: "i" } }
-            ]
-        });
-
-        res.status(200).send({ success: true, data: items });
+      const { keyword } = req.query;
+  
+      const items = await menuModel.find({
+        $or: [
+          { name: { $regex: keyword, $options: "i" } },
+          { category: { $regex: keyword, $options: "i" } },
+          { tags: { $regex: keyword, $options: "i" } }
+        ]
+      });
+  
+      res.status(200).send({ success: true, data: items });
     } catch (error) {
-        res.status(500).send({ success: false, message: error.message });
+      res.status(500).send({ success: false, message: error.message });
     }
-};
+  };
+  
 
 
 // get all menu items
@@ -143,7 +145,7 @@ export const ItemPhotoController = async(req,res) => {
 //get single item
 export const getSingleItem = async (req, res) => {
     try {
-        const id = req.body._id;
+        const id = req.params.id;
         const item = await menuModel.findById({id});
         req.status(200).send({
             success:true,
