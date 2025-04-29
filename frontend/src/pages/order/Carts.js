@@ -22,9 +22,22 @@ const Carts = () => {
             if (!res.ok) throw new Error('Failed to fetch carts');
             const data = await res.json();
 
-            // Enrich each cart's items with item name and price
+            // Enrich each cart
             const enrichedCarts = await Promise.all(
                 data.reverse().map(async (cart) => {
+                    // Fetch restaurant name
+                    let restaurantName = 'Unknown Restaurant';
+                    try {
+                        const res = await fetch(`http://localhost:8086/api/v1/auth/getSingleUser/${cart.restaurantId}`);
+                        if (res.ok) {
+                            const resData = await res.json();
+                            restaurantName = resData.user?.name || 'Unknown Restaurant';
+                        }
+                    } catch (e) {
+                        console.error(`Error fetching restaurant ${cart.restaurantId}:`, e);
+                    }
+
+                    // Fetch menu item details
                     const enrichedItems = await Promise.all(
                         cart.items.map(async (item) => {
                             try {
@@ -52,12 +65,13 @@ const Carts = () => {
                         const quantity = parseInt(item.quantity);
                         return sum + (isNaN(price) || isNaN(quantity) ? 0 : price * quantity);
                     }, 0);
-                    
+
                     return {
                         ...cart,
                         items: enrichedItems,
                         totalAmount: calculatedTotal,
-                    };                    
+                        restaurantName,
+                    };
                 })
             );
 
@@ -123,7 +137,7 @@ const Carts = () => {
                                 }}
                             />
 
-                            <h3>Restaurant: {cart.restaurantId}</h3>
+                            <h3>Restaurant: {cart.restaurantName}</h3>
 
                             {/* Items */}
                             <div className="cart-items">
