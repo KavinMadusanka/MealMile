@@ -18,6 +18,10 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const handleNavigate = () => {
+    navigate('/RestaurantRegistration');
+  };
+
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -161,6 +165,12 @@ const Signup = () => {
             <button type="submit" className="login-button">Signup</button>
           </div>
         </form>
+        <br/>
+        <div>
+            <p onClick={handleNavigate} style={{ cursor: 'pointer', color: '#7D0A0A' }}>
+               <u> You want to register as a Restaurant. Click here.</u>
+            </p>
+        </div>
       </div>
 
       <style>
