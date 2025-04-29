@@ -164,6 +164,41 @@ export const userDelete = async (req,res) => {
 
 /** ======================================================================================== */
 
+// Get single user by ID
+export const getSingleUser = async (req, res) => {
+    try {
+      const { Uid } = req.params;
+  
+      // Find user by ID
+      const user = await userModel.findById(Uid).select('-password'); // exclude password
+  
+      if (!user) {
+        return res.status(404).send({
+          success: false,
+          message: 'User not found',
+        });
+      }
+  
+      res.status(200).send({
+        success: true,
+        message: 'User fetched successfully',
+        user,
+      });
+    } catch (error) {
+      console.error('Error in getSingleUser:', error);
+      res.status(500).send({
+        success: false,
+        message: 'Error fetching user',
+        error,
+      });
+    }
+  };
+  
+
+/** ======================================================================================== */
+
+
+
 //get all controller
 export const getAllUsers = async (req, res) => {
     try {

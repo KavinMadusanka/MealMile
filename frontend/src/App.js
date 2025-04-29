@@ -19,6 +19,7 @@ import MenuItemForm from './pages/restaurant/MenuItemForm'
 import Orders from './pages/order/Orders';
 import Order from './pages/order/Order';
 import Pagenotfound from './pages/pageNotFound'
+import RestaurantHome from './pages/restaurant/RestaurantHome'
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/deliveryDashboard" element={<DeliveryDashboard />} />
         <Route path="/RestaurantRegistration" element={<RestaurantRegistration />} />
+        <Route path="/RestaurantHome" element={<RestaurantHome />} />
         <Route path="/addItem" element={<MenuItemForm />} />
         <Route path="/deliveryHistory" element={<DeliveryHistory />} />
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
