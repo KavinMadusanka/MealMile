@@ -120,6 +120,26 @@ export const getAllMenu = async (req,res) => {
     }
 }
 
+// Get Item photo controller
+export const ItemPhotoController = async(req,res) => {
+    try {
+        const item = await menuModel.findById(req.params.pid).select("image");
+        if(item.image.data){
+            res.set("Content-type",item.image.contentType);
+            return res.status(200).send(item.image.data);
+        }
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            message:"Error while getting photo",
+            error,
+        });
+        
+    }
+};
+
 //get single item
 export const getSingleItem = async (req, res) => {
     try {
