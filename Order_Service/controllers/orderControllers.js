@@ -26,9 +26,9 @@ const getOrders = asyncHandler(async(req,res) => {
 // @route POST /api/orders/:cartId
 const createOrder = asyncHandler(async(req,res) => {
     const {cartId} = req.params;
-    const {phoneNo, deliveryAddress, lat, lng} = req.body;
+    const {phoneNo, deliveryAddress, lat, lng, totalAmount} = req.body;
 
-    if(!cartId, !phoneNo, !deliveryAddress){
+    if(!cartId, !phoneNo, !deliveryAddress || totalAmount == null ){
         res.status(400);
         throw new Error("cartId, phoneNo and deliveryAddress are required");
     }
@@ -45,7 +45,7 @@ const createOrder = asyncHandler(async(req,res) => {
         customerId: cart.customerId,
         restaurantId: cart.restaurantId,
         items: cart.items,
-        totalAmount: cart.totalAmount,
+        totalAmount: totalAmount,
         phoneNo: phoneNo,
         deliveryAddress: deliveryAddress,
         lat: lat,
