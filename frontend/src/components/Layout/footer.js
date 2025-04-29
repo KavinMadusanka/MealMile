@@ -48,9 +48,13 @@ const Footer = () => {
                         <Link href="#" sx={{ display: 'block', marginBottom: '0.5rem', color: '#7D0A0A', textDecoration: 'none' }}>
                             Careers
                         </Link>
+                        <Link href="/review" sx={{ display: 'block',marginBottom: '0.5rem', color: '#7D0A0A', textDecoration: 'none' }}>
+                            Review & Ratings
+                        </Link>
                         <Link href="#" sx={{ display: 'block', color: '#7D0A0A', textDecoration: 'none' }}>
                             Contact Us
                         </Link>
+                        
                     </Box>
 
                     <Box sx={{ mb: 2 }}>
