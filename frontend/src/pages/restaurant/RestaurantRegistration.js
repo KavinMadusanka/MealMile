@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Layout from '../../components/Layout/Layout';
 
 const containerStyle = {
   width: '100%',
@@ -58,7 +59,7 @@ const RestaurantRegistration = () => {
     try {
       const res = await axios.post('http://localhost:8086/api/v1/auth/register', {
         ...formData,
-        role: 2, // make sure role is number, not string
+        role: 2,
       });
   
       console.log('awaaaa')
@@ -77,6 +78,7 @@ const RestaurantRegistration = () => {
   
 
   return (
+    <Layout>
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
       <h2>Restaurant Registration</h2>
       <form onSubmit={handleSubmit}>
@@ -105,6 +107,7 @@ const RestaurantRegistration = () => {
         <button type="submit" style={{ marginTop: '20px', marginBottom: ' 50px' }}>Register</button>
       </form>
     </div>
+    </Layout>
   );
 };
 
