@@ -31,6 +31,10 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    phoneNo: {
+        type: String,
+        required: true,
+    },
     deliveryAddress: {
         type: String,
         required: true

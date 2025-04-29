@@ -14,6 +14,7 @@ import DeliveryRequests from './pages/delivery/DeliveryRequests';
 import TrackingUpdates from './pages/delivery/TrackingUpdates';
 import Login from './pages/UserLogin'
 import Carts from './pages/order/Carts';
+import Cart from './pages/order/Cart';
 import MenuItemForm from './pages/restaurant/MenuItemForm'
 import Orders from './pages/order/Orders';
 import Order from './pages/order/Order';
@@ -39,6 +40,9 @@ function App() {
         <Route path="/deliveryRequests" element={<DeliveryRequests />} />
         <Route path="/trackingUpdates" element={<TrackingUpdates />} />
         <Route path="/carts" element={<Carts />} />
+        <Route path="/cart/:cid/:rid" element={<Cart />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/order/:id" element={<Order />} />
 
       </Routes>
     </>
