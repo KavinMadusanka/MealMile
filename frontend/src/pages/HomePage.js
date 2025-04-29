@@ -11,10 +11,45 @@ const HomePage = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const handleAddToCart = (item) => {
-    console.log("Added to cart:", item.name); 
-    toast.success(`${item.name} added to cart!`);
-  };
+  const handleAddToCart = async (item) => {
+    try {
+      const token = Cookies.get('access_token'); 
+      const userInfo = JSON.parse(localStorage.getItem('auth'));
+      const customerId = userInfo?.user?.id;
+      const restaurantId = item.restaurantId;
+  
+      if (!customerId) {
+        toast.error('User not logged in');
+        return;
+      }
+  
+      const payload = {
+        customerId,
+        restaurantId,
+        item: {
+          itemId: item._id,
+          quantity: 1,
+          price: item.price,
+        }
+      };
+  
+      const response = await axios.post('http://localhost:8089/api/cart', payload, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      if (response.status === 200) {
+        console.log("Cart Updated:", response.data.cart);
+        toast.success(`${item.name} added to cart!`);
+      } else {
+        toast.error('Failed to add to cart');
+      }
+    } catch (error) {
+      console.error('Add to Cart Error:', error);
+      toast.error('Error adding item to cart');
+    }
+  };  
 
   const fetchMenuItems = async () => {
     try {

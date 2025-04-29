@@ -9,9 +9,9 @@ const Carts = () => {
     const navigate = useNavigate();
 
     // 🧠 Get user info from localStorage
-    // const userInfo = JSON.parse(localStorage.getItem('auth'));
-    // const cid = userInfo?.user?.id;
-    const cid = 'cus001';
+    const userInfo = JSON.parse(localStorage.getItem('auth'));
+    const cid = userInfo?.user?.id;
+    // const cid = 'cus001';
 
     const fetchCarts = async () => {
         if (!cid) {
