@@ -20,6 +20,7 @@ import Orders from './pages/order/Orders';
 import Order from './pages/order/Order';
 import Pagenotfound from './pages/pageNotFound'
 import RestaurantHome from './pages/restaurant/RestaurantHome'
+import Signup from './pages/Signup'
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Pagenotfound />} />
+        <Route path="/Signup" element={<Signup />} />
         <Route path="/Loginpage" element={<Login />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom'; 
 import { useAuth } from '../../context/auth'; 
@@ -10,7 +10,7 @@ import axios from 'axios';
 const Header = () => {
     const [auth] = useAuth();
     const navigate = useNavigate();
-    const location = useLocation(); // 👈 get the current page path
+    const location = useLocation(); 
 
     const handleLogout = async () => {
         try {
@@ -104,7 +104,7 @@ const Header = () => {
                         <Button component={Link} to="/loginpage" sx={buttonStyle('/loginpage')}>
                             Sign In
                         </Button>
-                        <Button component={Link} to="/signup" sx={buttonStyle('/signup')}>
+                        <Button component={Link} to="/Signup" sx={buttonStyle('/Signup')}>
                             Sign Up
                         </Button>
                     </>
