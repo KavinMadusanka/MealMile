@@ -35,6 +35,6 @@ router.get('/getAllMenu',getAllMenu);
 router.get("/getItemphoto/:pid",ItemPhotoController);
 
 //get single item
-router.get('/getItem/:id',verifyToken,isRestaurant ,getSingleItem);
+router.get('/getItem/:id' ,getSingleItem);
 
 export default router;
